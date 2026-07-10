@@ -1,9 +1,12 @@
-if IY_LOADED and not _G.IY_DEBUG then
+if (IY_LOADED or KY_LOADED) and not _G.IY_DEBUG and not _G.KY_DEBUG then
 	-- error("Kagi Yield is already running!", 0)
 	return
 end
 
-pcall(function() getgenv().IY_LOADED = true end)
+pcall(function() 
+	getgenv().IY_LOADED = true 
+	getgenv().KY_LOADED = true 
+end)
 if not game:IsLoaded() then game.Loaded:Wait() end
 
 function missing(t, f, fallback)
@@ -100,21 +103,24 @@ end, function()
 	IsOnMobile = UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled
 end)
 isLegacyChat = TextChatService.ChatVersion == Enum.ChatVersion.LegacyChatService
+--[[rcdEnabled = select(2, pcall(function()
+    return gethidden(workspace, "RejectCharacterDeletions") ~= Enum.RejectCharacterDeletions.Disabled
+end)) or false]]
 
 -- xylex & europa
 local iyassets = {
-	["infiniteyield/assets/bindsandplugins.png"] = "rbxassetid://5147695474",
-	["infiniteyield/assets/close.png"] = "rbxassetid://5054663650",
-	["infiniteyield/assets/editaliases.png"] = "rbxassetid://5147488658",
-	["infiniteyield/assets/editkeybinds.png"] = "rbxassetid://129697930",
-	["infiniteyield/assets/edittheme.png"] = "rbxassetid://4911962991",
-	["infiniteyield/assets/editwaypoints.png"] = "rbxassetid://5147488592",
-	["infiniteyield/assets/imgstudiopluginlogo.png"] = "rbxassetid://4113050383",
-	["infiniteyield/assets/logo.png"] = "rbxassetid://1352543873",
-	["infiniteyield/assets/minimize.png"] = "rbxassetid://2406617031",
-	["infiniteyield/assets/pin.png"] = "rbxassetid://6234691350",
-	["infiniteyield/assets/reference.png"] = "rbxassetid://3523243755",
-	["infiniteyield/assets/settings.png"] = "rbxassetid://1204397029"
+	["kagiyield/assets/bindsandplugins.png"] = "rbxassetid://5147695474",
+	["kagiyield/assets/close.png"] = "rbxassetid://5054663650",
+	["kagiyield/assets/editaliases.png"] = "rbxassetid://5147488658",
+	["kagiyield/assets/editkeybinds.png"] = "rbxassetid://129697930",
+	["kagiyield/assets/edittheme.png"] = "rbxassetid://4911962991",
+	["kagiyield/assets/editwaypoints.png"] = "rbxassetid://5147488592",
+	["kagiyield/assets/imgstudiopluginlogo.png"] = "rbxassetid://4113050383",
+	["kagiyield/assets/logo.png"] = "rbxassetid://1352543873",
+	["kagiyield/assets/minimize.png"] = "rbxassetid://2406617031",
+	["kagiyield/assets/pin.png"] = "rbxassetid://6234691350",
+	["kagiyield/assets/reference.png"] = "rbxassetid://3523243755",
+	["kagiyield/assets/settings.png"] = "rbxassetid://1204397029"
 }
 
 local function getcustomasset(asset)
@@ -132,21 +138,21 @@ end
 if makefolder and isfolder and writefile and isfile then
 	pcall(function() -- good executor trust
 		local assets = "https://raw.githubusercontent.com/infyiff/backup/refs/heads/main/"
-		for _, folder in {"infiniteyield", "infiniteyield/assets"} do
+		for _, folder in {"kagiyield", "kagiyield/assets"} do
 			if not isfolder(folder) then
 				makefolder(folder)
 			end
 		end
 		for path in iyassets do
 			if not isfile(path) then
-				writefile(path, game:HttpGet((path:gsub("infiniteyield/", assets))))
+				writefile(path, game:HttpGet((path:gsub("kagiyield/", assets))))
 			end
 		end
-		if IsOnMobile then writefile("infiniteyield/assets/.nomedia", "") end
+		if IsOnMobile then writefile("kagiyield/assets/.nomedia", "") end
 	end)
 end
 
-currentVersion = "6.4"
+currentVersion = "6.4.1"
 
 ScaledHolder = Instance.new("Frame")
 Scale = Instance.new("UIScale")
@@ -336,7 +342,7 @@ Scale.Name = randomString()
 Holder.Name = randomString()
 Holder.Parent = ScaledHolder
 Holder.Active = true
-Holder.BackgroundColor3 = Color3.fromRGB(255, 200, 220)
+Holder.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 Holder.BorderSizePixel = 0
 Holder.Position = UDim2.new(1, -250, 1, -220)
 Holder.Size = UDim2.new(0, 250, 0, 220)
@@ -346,16 +352,18 @@ table.insert(shade2,Holder)
 Title.Name = "Title"
 Title.Parent = Holder
 Title.Active = true
-Title.BackgroundColor3 = Color3.fromRGB(255, 220, 230)
+Title.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
 Title.BorderSizePixel = 0
 Title.Size = UDim2.new(0, 250, 0, 20)
 Title.Font = Enum.Font.SourceSans
 Title.TextSize = 18
-Title.Text = "Kagi Yield"
+Title.Text = "Kagi Yield FE v" .. currentVersion
 
 do
 	local emoji = ({
 		["01 01"] = "🎆",
+		["02 14"] = "💝",
+		["03 17"] = "☘️",
 		[(function(Year)
 			local A = math.floor(Year/100)
 			local B = math.floor((13+8*A)/25)
@@ -381,7 +389,7 @@ do
 	end
 end
 
-Title.TextColor3 = Color3.fromRGB(70, 70, 70)
+Title.TextColor3 = Color3.new(1, 1, 1)
 Title.ZIndex = 10
 table.insert(shade1,Title)
 table.insert(text1,Title)
@@ -389,7 +397,7 @@ table.insert(text1,Title)
 Dark.Name = "Dark"
 Dark.Parent = Holder
 Dark.Active = true
-Dark.BackgroundColor3 = Color3.fromRGB(255, 220, 230)
+Dark.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
 Dark.BorderSizePixel = 0
 Dark.Position = UDim2.new(0, 0, 0, 45)
 Dark.Size = UDim2.new(0, 250, 0, 175)
@@ -405,7 +413,7 @@ Cmdbar.Size = UDim2.new(0, 240, 0, 25)
 Cmdbar.Font = Enum.Font.SourceSans
 Cmdbar.TextSize = 18
 Cmdbar.TextXAlignment = Enum.TextXAlignment.Left
-Cmdbar.TextColor3 = Color3.fromRGB(70, 70, 70)
+Cmdbar.TextColor3 = Color3.new(1, 1, 1)
 Cmdbar.Text = ""
 Cmdbar.ZIndex = 10
 Cmdbar.PlaceholderText = "Command Bar"
@@ -416,7 +424,7 @@ CMDsF.BackgroundTransparency = 1
 CMDsF.BorderSizePixel = 0
 CMDsF.Position = UDim2.new(0, 5, 0, 45)
 CMDsF.Size = UDim2.new(0, 245, 0, 175)
-CMDsF.ScrollBarImageColor3 = Color3.fromRGB(78,78,79)
+CMDsF.ScrollBarImageColor3 = Color3.fromRGB(253, 116, 255)
 CMDsF.BottomImage = "rbxasset://textures/ui/Scroll/scroll-middle.png"
 CMDsF.CanvasSize = UDim2.new(0, 0, 0, 0)
 CMDsF.MidImage = "rbxasset://textures/ui/Scroll/scroll-middle.png"
@@ -433,7 +441,7 @@ SettingsButton.Parent = Holder
 SettingsButton.BackgroundTransparency = 1
 SettingsButton.Position = UDim2.new(0, 230, 0, 0)
 SettingsButton.Size = UDim2.new(0, 20, 0, 20)
-SettingsButton.Image = getcustomasset("infiniteyield/assets/settings.png")
+SettingsButton.Image = getcustomasset("kagiyield/assets/settings.png")
 SettingsButton.ZIndex = 10
 
 ReferenceButton = Instance.new("ImageButton")
@@ -442,13 +450,13 @@ ReferenceButton.Parent = Holder
 ReferenceButton.BackgroundTransparency = 1
 ReferenceButton.Position = UDim2.new(0, 212, 0, 2)
 ReferenceButton.Size = UDim2.new(0, 16, 0, 16)
-ReferenceButton.Image = getcustomasset("infiniteyield/assets/reference.png")
+ReferenceButton.Image = getcustomasset("kagiyield/assets/reference.png")
 ReferenceButton.ZIndex = 10
 
 Settings.Name = "Settings"
 Settings.Parent = Holder
 Settings.Active = true
-Settings.BackgroundColor3 = Color3.fromRGB(255, 220, 230)
+Settings.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
 Settings.BorderSizePixel = 0
 Settings.Position = UDim2.new(0, 0, 0, 220)
 Settings.Size = UDim2.new(0, 250, 0, 175)
@@ -461,7 +469,7 @@ SettingsHolder.Parent = Settings
 SettingsHolder.BackgroundTransparency = 1
 SettingsHolder.BorderSizePixel = 0
 SettingsHolder.Size = UDim2.new(1,0,1,0)
-SettingsHolder.ScrollBarImageColor3 = Color3.fromRGB(78,78,79)
+SettingsHolder.ScrollBarImageColor3 = Color3.fromRGB(253, 116, 255)
 SettingsHolder.BottomImage = "rbxasset://textures/ui/Scroll/scroll-middle.png"
 SettingsHolder.CanvasSize = UDim2.new(0, 0, 0, 235)
 SettingsHolder.MidImage = "rbxasset://textures/ui/Scroll/scroll-middle.png"
@@ -473,7 +481,7 @@ table.insert(scroll,SettingsHolder)
 
 Prefix.Name = "Prefix"
 Prefix.Parent = SettingsHolder
-Prefix.BackgroundColor3 = Color3.fromRGB(255, 200, 220)
+Prefix.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 Prefix.BorderSizePixel = 0
 Prefix.BackgroundTransparency = 1
 Prefix.Position = UDim2.new(0, 5, 0, 5)
@@ -481,7 +489,7 @@ Prefix.Size = UDim2.new(1, -10, 0, 20)
 Prefix.Font = Enum.Font.SourceSans
 Prefix.TextSize = 14
 Prefix.Text = "Prefix"
-Prefix.TextColor3 = Color3.fromRGB(70, 70, 70)
+Prefix.TextColor3 = Color3.new(1, 1, 1)
 Prefix.TextXAlignment = Enum.TextXAlignment.Left
 Prefix.ZIndex = 10
 table.insert(shade2,Prefix)
@@ -489,21 +497,21 @@ table.insert(text1,Prefix)
 
 PrefixBox.Name = "PrefixBox"
 PrefixBox.Parent = Prefix
-PrefixBox.BackgroundColor3 = Color3.fromRGB(255, 180, 210)
+PrefixBox.BackgroundColor3 = Color3.fromRGB(253, 116, 255)
 PrefixBox.BorderSizePixel = 0
 PrefixBox.Position = UDim2.new(1, -20, 0, 0)
 PrefixBox.Size = UDim2.new(0, 20, 0, 20)
 PrefixBox.Font = Enum.Font.SourceSansBold
 PrefixBox.TextSize = 14
 PrefixBox.Text = ''
-PrefixBox.TextColor3 = Color3.new(0.2, 0.2, 0.2)
+PrefixBox.TextColor3 = Color3.new(0, 0, 0)
 PrefixBox.ZIndex = 10
 table.insert(shade3,PrefixBox)
 table.insert(text2,PrefixBox)
 
 function makeSettingsButton(name,iconID,off)
 	local button = Instance.new("TextButton")
-	button.BackgroundColor3 = Color3.fromRGB(255, 200, 220)
+	button.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 	button.BorderSizePixel = 0
 	button.Position = UDim2.new(0,0,0,0)
 	button.Size = UDim2.new(1,0,0,25)
@@ -530,7 +538,7 @@ function makeSettingsButton(name,iconID,off)
 	label.Position = UDim2.new(0,28,0,0)
 	label.Size = UDim2.new(1,-28,1,0)
 	label.Font = Enum.Font.SourceSans
-	label.TextColor3 = Color3.fromRGB(70, 70, 70)
+	label.TextColor3 = Color3.new(1, 1, 1)
 	label.TextSize = 14
 	label.ZIndex = 10
 	label.TextXAlignment = Enum.TextXAlignment.Left
@@ -539,19 +547,19 @@ function makeSettingsButton(name,iconID,off)
 	return button
 end
 
-ColorsButton = makeSettingsButton("Edit Theme",getcustomasset("infiniteyield/assets/edittheme.png"))
+ColorsButton = makeSettingsButton("Edit Theme",getcustomasset("kagiyield/assets/edittheme.png"))
 ColorsButton.Position = UDim2.new(0, 5, 0, 55)
 ColorsButton.Size = UDim2.new(1, -10, 0, 25)
 ColorsButton.Name = "Colors"
 ColorsButton.Parent = SettingsHolder
 
-Keybinds = makeSettingsButton("Edit Keybinds",getcustomasset("infiniteyield/assets/editkeybinds.png"))
+Keybinds = makeSettingsButton("Edit Keybinds",getcustomasset("kagiyield/assets/editkeybinds.png"))
 Keybinds.Position = UDim2.new(0, 5, 0, 85)
 Keybinds.Size = UDim2.new(1, -10, 0, 25)
 Keybinds.Name = "Keybinds"
 Keybinds.Parent = SettingsHolder
 
-Aliases = makeSettingsButton("Edit Aliases",getcustomasset("infiniteyield/assets/editaliases.png"))
+Aliases = makeSettingsButton("Edit Aliases",getcustomasset("kagiyield/assets/editaliases.png"))
 Aliases.Position = UDim2.new(0, 5, 0, 115)
 Aliases.Size = UDim2.new(1, -10, 0, 25)
 Aliases.Name = "Aliases"
@@ -559,7 +567,7 @@ Aliases.Parent = SettingsHolder
 
 StayOpen.Name = "StayOpen"
 StayOpen.Parent = SettingsHolder
-StayOpen.BackgroundColor3 = Color3.fromRGB(255, 200, 220)
+StayOpen.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 StayOpen.BorderSizePixel = 0
 StayOpen.BackgroundTransparency = 1
 StayOpen.Position = UDim2.new(0, 5, 0, 30)
@@ -567,7 +575,7 @@ StayOpen.Size = UDim2.new(1, -10, 0, 20)
 StayOpen.Font = Enum.Font.SourceSans
 StayOpen.TextSize = 14
 StayOpen.Text = "Keep Menu Open"
-StayOpen.TextColor3 = Color3.fromRGB(70, 70, 70)
+StayOpen.TextColor3 = Color3.new(1, 1, 1)
 StayOpen.TextXAlignment = Enum.TextXAlignment.Left
 StayOpen.ZIndex = 10
 table.insert(shade2,StayOpen)
@@ -575,7 +583,7 @@ table.insert(text1,StayOpen)
 
 Button.Name = "Button"
 Button.Parent = StayOpen
-Button.BackgroundColor3 = Color3.fromRGB(255, 180, 210)
+Button.BackgroundColor3 = Color3.fromRGB(253, 116, 255)
 Button.BorderSizePixel = 0
 Button.Position = UDim2.new(1, -20, 0, 0)
 Button.Size = UDim2.new(0, 20, 0, 20)
@@ -584,7 +592,7 @@ table.insert(shade3,Button)
 
 On.Name = "On"
 On.Parent = Button
-On.BackgroundColor3 = Color3.fromRGB(230, 150, 180)
+On.BackgroundColor3 = Color3.fromRGB(253, 116, 255)
 On.BackgroundTransparency = 1
 On.BorderSizePixel = 0
 On.Position = UDim2.new(0, 2, 0, 2)
@@ -592,22 +600,22 @@ On.Size = UDim2.new(0, 16, 0, 16)
 On.Font = Enum.Font.SourceSans
 On.FontSize = Enum.FontSize.Size14
 On.Text = ""
-On.TextColor3 = Color3.new(0.2, 0.2, 0.2)
+On.TextColor3 = Color3.new(0, 0, 0)
 On.ZIndex = 10
 
-Positions = makeSettingsButton("Edit/Goto Waypoints",getcustomasset("infiniteyield/assets/editwaypoints.png"))
+Positions = makeSettingsButton("Edit/Goto Waypoints",getcustomasset("kagiyield/assets/editwaypoints.png"))
 Positions.Position = UDim2.new(0, 5, 0, 145)
 Positions.Size = UDim2.new(1, -10, 0, 25)
 Positions.Name = "Waypoints"
 Positions.Parent = SettingsHolder
 
-EventBind = makeSettingsButton("Edit Event Binds",getcustomasset("infiniteyield/assets/bindsandplugins.png"),759)
+EventBind = makeSettingsButton("Edit Event Binds",getcustomasset("kagiyield/assets/bindsandplugins.png"),759)
 EventBind.Position = UDim2.new(0, 5, 0, 205)
 EventBind.Size = UDim2.new(1, -10, 0, 25)
 EventBind.Name = "EventBinds"
 EventBind.Parent = SettingsHolder
 
-Plugins = makeSettingsButton("Manage Plugins",getcustomasset("infiniteyield/assets/bindsandplugins.png"),743)
+Plugins = makeSettingsButton("Manage Plugins",getcustomasset("kagiyield/assets/bindsandplugins.png"),743)
 Plugins.Position = UDim2.new(0, 5, 0, 175)
 Plugins.Size = UDim2.new(1, -10, 0, 25)
 Plugins.Name = "Plugins"
@@ -622,14 +630,14 @@ Example.Visible = false
 Example.Font = Enum.Font.SourceSans
 Example.TextSize = 18
 Example.Text = "Example"
-Example.TextColor3 = Color3.fromRGB(70, 70, 70)
+Example.TextColor3 = Color3.new(1, 1, 1)
 Example.TextXAlignment = Enum.TextXAlignment.Left
 Example.ZIndex = 10
 table.insert(text1,Example)
 
 Notification.Name = randomString()
 Notification.Parent = ScaledHolder
-Notification.BackgroundColor3 = Color3.fromRGB(255, 220, 230)
+Notification.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
 Notification.BorderSizePixel = 0
 Notification.Position = UDim2.new(1, -500, 1, 20)
 Notification.Size = UDim2.new(0, 250, 0, 100)
@@ -638,13 +646,13 @@ table.insert(shade1,Notification)
 
 Title_2.Name = "Title"
 Title_2.Parent = Notification
-Title_2.BackgroundColor3 = Color3.fromRGB(255, 200, 220)
+Title_2.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 Title_2.BorderSizePixel = 0
 Title_2.Size = UDim2.new(0, 250, 0, 20)
 Title_2.Font = Enum.Font.SourceSans
 Title_2.TextSize = 14
 Title_2.Text = "Notification Title"
-Title_2.TextColor3 = Color3.fromRGB(70, 70, 70)
+Title_2.TextColor3 = Color3.new(1, 1, 1)
 Title_2.ZIndex = 10
 table.insert(shade2,Title_2)
 table.insert(text1,Title_2)
@@ -658,7 +666,7 @@ Text_2.Size = UDim2.new(0, 240, 0, 75)
 Text_2.Font = Enum.Font.SourceSans
 Text_2.TextSize = 16
 Text_2.Text = "Notification Text"
-Text_2.TextColor3 = Color3.fromRGB(70, 70, 70)
+Text_2.TextColor3 = Color3.new(1, 1, 1)
 Text_2.TextWrapped = true
 Text_2.ZIndex = 10
 table.insert(text1,Text_2)
@@ -672,11 +680,11 @@ CloseButton.Text = ""
 CloseButton.ZIndex = 10
 
 CloseImage.Parent = CloseButton
-CloseImage.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+CloseImage.BackgroundColor3 = Color3.new(1, 1, 1)
 CloseImage.BackgroundTransparency = 1
 CloseImage.Position = UDim2.new(0, 5, 0, 5)
 CloseImage.Size = UDim2.new(0, 10, 0, 10)
-CloseImage.Image = getcustomasset("infiniteyield/assets/close.png")
+CloseImage.Image = getcustomasset("kagiyield/assets/close.png")
 CloseImage.ZIndex = 10
 
 PinButton.Name = "PinButton"
@@ -687,17 +695,17 @@ PinButton.ZIndex = 10
 PinButton.Text = ""
 
 PinImage.Parent = PinButton
-PinImage.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+PinImage.BackgroundColor3 = Color3.new(1, 1, 1)
 PinImage.BackgroundTransparency = 1
 PinImage.Position = UDim2.new(0, 3, 0, 3)
 PinImage.Size = UDim2.new(0, 14, 0, 14)
 PinImage.ZIndex = 10
-PinImage.Image = getcustomasset("infiniteyield/assets/pin.png")
+PinImage.Image = getcustomasset("kagiyield/assets/pin.png")
 
 Tooltip.Name = randomString()
 Tooltip.Parent = ScaledHolder
 Tooltip.Active = true
-Tooltip.BackgroundColor3 = Color3.fromRGB(255, 220, 230)
+Tooltip.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
 Tooltip.BackgroundTransparency = 0.1
 Tooltip.BorderSizePixel = 0
 Tooltip.Size = UDim2.new(0, 200, 0, 96)
@@ -707,14 +715,14 @@ table.insert(shade1,Tooltip)
 
 Title_3.Name = "Title"
 Title_3.Parent = Tooltip
-Title_3.BackgroundColor3 = Color3.fromRGB(255, 200, 220)
+Title_3.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 Title_3.BackgroundTransparency = 0.1
 Title_3.BorderSizePixel = 0
 Title_3.Size = UDim2.new(0, 200, 0, 20)
 Title_3.Font = Enum.Font.SourceSans
 Title_3.TextSize = 14
 Title_3.Text = ""
-Title_3.TextColor3 = Color3.fromRGB(70, 70, 70)
+Title_3.TextColor3 = Color3.new(1, 1, 1)
 Title_3.TextTransparency = 0.1
 Title_3.ZIndex = 10
 table.insert(shade2,Title_3)
@@ -729,7 +737,7 @@ Description.Position = UDim2.new(0,10,0,18)
 Description.Font = Enum.Font.SourceSans
 Description.TextSize = 16
 Description.Text = ""
-Description.TextColor3 = Color3.fromRGB(70, 70, 70)
+Description.TextColor3 = Color3.new(1, 1, 1)
 Description.TextTransparency = 0.1
 Description.TextWrapped = true
 Description.ZIndex = 10
@@ -738,7 +746,7 @@ table.insert(text1,Description)
 IntroBackground.Name = "IntroBackground"
 IntroBackground.Parent = Holder
 IntroBackground.Active = true
-IntroBackground.BackgroundColor3 = Color3.fromRGB(255, 220, 230)
+IntroBackground.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
 IntroBackground.BorderSizePixel = 0
 IntroBackground.Position = UDim2.new(0, 0, 0, 45)
 IntroBackground.Size = UDim2.new(0, 250, 0, 175)
@@ -750,7 +758,7 @@ Logo.BackgroundTransparency = 1
 Logo.BorderSizePixel = 0
 Logo.Position = UDim2.new(0, 125, 0, 127)
 Logo.Size = UDim2.new(0, 10, 0, 10)
-Logo.Image = getcustomasset("infiniteyield/assets/logo.png")
+Logo.Image = getcustomasset("kagiyield/assets/logo.png")
 Logo.ImageTransparency = 0
 Logo.ZIndex = 10
 
@@ -762,14 +770,14 @@ Credits.Position = UDim2.new(0, 0, 0.9, 30)
 Credits.Size = UDim2.new(0, 250, 0, 20)
 Credits.Font = Enum.Font.SourceSansLight
 Credits.FontSize = Enum.FontSize.Size14
-Credits.Text = "Edge // Zwolf // Moon // Toon // Peyton // ATP"
-Credits.TextColor3 = Color3.fromRGB(70, 70, 70)
+Credits.Text = "Kagi Yield // Edge // Zwolf // Moon // Toon // Peyton // ATP"
+Credits.TextColor3 = Color3.new(1, 1, 1)
 Credits.ZIndex = 10
 
 KeybindsFrame.Name = "KeybindsFrame"
 KeybindsFrame.Parent = Settings
 KeybindsFrame.Active = true
-KeybindsFrame.BackgroundColor3 = Color3.fromRGB(255, 220, 230)
+KeybindsFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
 KeybindsFrame.BorderSizePixel = 0
 KeybindsFrame.Position = UDim2.new(0, 0, 0, 175)
 KeybindsFrame.Size = UDim2.new(0, 250, 0, 175)
@@ -778,42 +786,42 @@ table.insert(shade1,KeybindsFrame)
 
 Close.Name = "Close"
 Close.Parent = KeybindsFrame
-Close.BackgroundColor3 = Color3.fromRGB(255, 200, 220)
+Close.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 Close.BorderSizePixel = 0
 Close.Position = UDim2.new(0, 205, 0, 150)
 Close.Size = UDim2.new(0, 40, 0, 20)
 Close.Font = Enum.Font.SourceSans
 Close.TextSize = 14
 Close.Text = "Close"
-Close.TextColor3 = Color3.fromRGB(70, 70, 70)
+Close.TextColor3 = Color3.new(1, 1, 1)
 Close.ZIndex = 10
 table.insert(shade2,Close)
 table.insert(text1,Close)
 
 Add.Name = "Add"
 Add.Parent = KeybindsFrame
-Add.BackgroundColor3 = Color3.fromRGB(255, 200, 220)
+Add.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 Add.BorderSizePixel = 0
 Add.Position = UDim2.new(0, 5, 0, 150)
 Add.Size = UDim2.new(0, 40, 0, 20)
 Add.Font = Enum.Font.SourceSans
 Add.TextSize = 14
 Add.Text = "Add"
-Add.TextColor3 = Color3.fromRGB(70, 70, 70)
+Add.TextColor3 = Color3.new(1, 1, 1)
 Add.ZIndex = 10
 table.insert(shade2,Add)
 table.insert(text1,Add)
 
 Delete.Name = "Delete"
 Delete.Parent = KeybindsFrame
-Delete.BackgroundColor3 = Color3.fromRGB(255, 200, 220)
+Delete.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 Delete.BorderSizePixel = 0
 Delete.Position = UDim2.new(0, 50, 0, 150)
 Delete.Size = UDim2.new(0, 40, 0, 20)
 Delete.Font = Enum.Font.SourceSans
 Delete.TextSize = 14
 Delete.Text = "Clear"
-Delete.TextColor3 = Color3.fromRGB(70, 70, 70)
+Delete.TextColor3 = Color3.new(1, 1, 1)
 Delete.ZIndex = 10
 table.insert(shade2,Delete)
 table.insert(text1,Delete)
@@ -824,7 +832,7 @@ Holder_2.BackgroundTransparency = 1
 Holder_2.BorderSizePixel = 0
 Holder_2.Position = UDim2.new(0, 0, 0, 0)
 Holder_2.Size = UDim2.new(0, 250, 0, 145)
-Holder_2.ScrollBarImageColor3 = Color3.fromRGB(78,78,79)
+Holder_2.ScrollBarImageColor3 = Color3.fromRGB(253, 116, 255)
 Holder_2.BottomImage = "rbxasset://textures/ui/Scroll/scroll-middle.png"
 Holder_2.CanvasSize = UDim2.new(0, 0, 0, 0)
 Holder_2.MidImage = "rbxasset://textures/ui/Scroll/scroll-middle.png"
@@ -835,7 +843,7 @@ Holder_2.ZIndex = 10
 
 Example_2.Name = "Example"
 Example_2.Parent = KeybindsFrame
-Example_2.BackgroundColor3 = Color3.fromRGB(255, 200, 220)
+Example_2.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 Example_2.BorderSizePixel = 0
 Example_2.Size = UDim2.new(0, 10, 0, 20)
 Example_2.Visible = false
@@ -844,14 +852,14 @@ table.insert(shade2,Example_2)
 
 Text_3.Name = "Text"
 Text_3.Parent = Example_2
-Text_3.BackgroundColor3 = Color3.fromRGB(255, 200, 220)
+Text_3.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 Text_3.BorderSizePixel = 0
 Text_3.Position = UDim2.new(0, 10, 0, 0)
 Text_3.Size = UDim2.new(0, 240, 0, 20)
 Text_3.Font = Enum.Font.SourceSans
 Text_3.TextSize = 14
 Text_3.Text = "nom"
-Text_3.TextColor3 = Color3.fromRGB(70, 70, 70)
+Text_3.TextColor3 = Color3.new(1, 1, 1)
 Text_3.TextXAlignment = Enum.TextXAlignment.Left
 Text_3.ZIndex = 10
 table.insert(shade2,Text_3)
@@ -859,14 +867,14 @@ table.insert(text1,Text_3)
 
 Delete_2.Name = "Delete"
 Delete_2.Parent = Text_3
-Delete_2.BackgroundColor3 = Color3.fromRGB(255, 180, 210)
+Delete_2.BackgroundColor3 = Color3.fromRGB(253, 116, 255)
 Delete_2.BorderSizePixel = 0
 Delete_2.Position = UDim2.new(0, 200, 0, 0)
 Delete_2.Size = UDim2.new(0, 40, 0, 20)
 Delete_2.Font = Enum.Font.SourceSans
 Delete_2.TextSize = 14
 Delete_2.Text = "Delete"
-Delete_2.TextColor3 = Color3.new(0.2, 0.2, 0.2)
+Delete_2.TextColor3 = Color3.new(0, 0, 0)
 Delete_2.ZIndex = 10
 table.insert(shade3,Delete_2)
 table.insert(text2,Delete_2)
@@ -882,7 +890,7 @@ KeybindEditor.ZIndex = 10
 background_2.Name = "background"
 background_2.Parent = KeybindEditor
 background_2.Active = true
-background_2.BackgroundColor3 = Color3.fromRGB(255, 220, 230)
+background_2.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
 background_2.BorderSizePixel = 0
 background_2.Position = UDim2.new(0, 0, 0, 20)
 background_2.Size = UDim2.new(0, 360, 0, 185)
@@ -892,7 +900,7 @@ table.insert(shade1,background_2)
 Dark_3.Name = "Dark"
 Dark_3.Parent = background_2
 Dark_3.Active = true
-Dark_3.BackgroundColor3 = Color3.fromRGB(255, 200, 220)
+Dark_3.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 Dark_3.BorderSizePixel = 0
 Dark_3.Position = UDim2.new(0, 135, 0, 0)
 Dark_3.Size = UDim2.new(0, 2, 0, 185)
@@ -908,7 +916,7 @@ Directions.Size = UDim2.new(0, 115, 0, 90)
 Directions.ZIndex = 10
 Directions.Font = Enum.Font.SourceSans
 Directions.Text = "Click the button below and press a key/mouse button. Then select what you want to bind it to."
-Directions.TextColor3 = Color3.fromRGB(70, 70, 70)
+Directions.TextColor3 = Color3.fromRGB(255, 255, 255)
 Directions.TextSize = 14.000
 Directions.TextWrapped = true
 Directions.TextYAlignment = Enum.TextYAlignment.Top
@@ -916,14 +924,14 @@ table.insert(text1,Directions)
 
 BindTo.Name = "BindTo"
 BindTo.Parent = background_2
-BindTo.BackgroundColor3 = Color3.fromRGB(255, 200, 220)
+BindTo.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 BindTo.BorderSizePixel = 0
 BindTo.Position = UDim2.new(0, 10, 0, 95)
 BindTo.Size = UDim2.new(0, 115, 0, 50)
 BindTo.ZIndex = 10
 BindTo.Font = Enum.Font.SourceSans
 BindTo.Text = "Click to bind"
-BindTo.TextColor3 = Color3.fromRGB(70, 70, 70)
+BindTo.TextColor3 = Color3.fromRGB(255, 255, 255)
 BindTo.TextSize = 16.000
 table.insert(shade2,BindTo)
 table.insert(text1,BindTo)
@@ -936,35 +944,35 @@ TriggerLabel.Size = UDim2.new(0, 45, 0, 20)
 TriggerLabel.ZIndex = 10
 TriggerLabel.Font = Enum.Font.SourceSans
 TriggerLabel.Text = "Trigger:"
-TriggerLabel.TextColor3 = Color3.fromRGB(70, 70, 70)
+TriggerLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 TriggerLabel.TextSize = 14.000
 TriggerLabel.TextXAlignment = Enum.TextXAlignment.Left
 table.insert(text1,TriggerLabel)
 
 BindTriggerSelect.Name = "BindTo"
 BindTriggerSelect.Parent = background_2
-BindTriggerSelect.BackgroundColor3 = Color3.fromRGB(255, 200, 220)
+BindTriggerSelect.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 BindTriggerSelect.BorderSizePixel = 0
 BindTriggerSelect.Position = UDim2.new(0, 60, 0, 155)
 BindTriggerSelect.Size = UDim2.new(0, 65, 0, 20)
 BindTriggerSelect.ZIndex = 10
 BindTriggerSelect.Font = Enum.Font.SourceSans
 BindTriggerSelect.Text = "KeyDown"
-BindTriggerSelect.TextColor3 = Color3.fromRGB(70, 70, 70)
+BindTriggerSelect.TextColor3 = Color3.fromRGB(255, 255, 255)
 BindTriggerSelect.TextSize = 16.000
 table.insert(shade2,BindTriggerSelect)
 table.insert(text1,BindTriggerSelect)
 
 Add_2.Name = "Add"
 Add_2.Parent = background_2
-Add_2.BackgroundColor3 = Color3.fromRGB(255, 200, 220)
+Add_2.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 Add_2.BorderSizePixel = 0
 Add_2.Position = UDim2.new(0, 310, 0, 35)
 Add_2.Size = UDim2.new(0, 40, 0, 20)
 Add_2.ZIndex = 10
 Add_2.Font = Enum.Font.SourceSans
 Add_2.Text = "Add"
-Add_2.TextColor3 = Color3.fromRGB(70, 70, 70)
+Add_2.TextColor3 = Color3.fromRGB(255, 255, 255)
 Add_2.TextSize = 14.000
 table.insert(shade2,Add_2)
 table.insert(text1,Add_2)
@@ -985,13 +993,13 @@ table.insert(scroll,Toggles)
 
 ClickTP.Name = "Click TP (Hold Key & Click)"
 ClickTP.Parent = Toggles
-ClickTP.BackgroundColor3 = Color3.fromRGB(255, 200, 220)
+ClickTP.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 ClickTP.BorderSizePixel = 0
 ClickTP.Size = UDim2.new(0, 200, 0, 20)
 ClickTP.ZIndex = 10
 ClickTP.Font = Enum.Font.SourceSans
 ClickTP.Text = "    Click TP (Hold Key & Click)"
-ClickTP.TextColor3 = Color3.fromRGB(70, 70, 70)
+ClickTP.TextColor3 = Color3.fromRGB(255, 255, 255)
 ClickTP.TextSize = 14.000
 ClickTP.TextXAlignment = Enum.TextXAlignment.Left
 table.insert(shade2,ClickTP)
@@ -999,28 +1007,28 @@ table.insert(text1,ClickTP)
 
 Select.Name = "Select"
 Select.Parent = ClickTP
-Select.BackgroundColor3 = Color3.fromRGB(255, 180, 210)
+Select.BackgroundColor3 = Color3.fromRGB(253, 116, 255)
 Select.BorderSizePixel = 0
 Select.Position = UDim2.new(0, 160, 0, 0)
 Select.Size = UDim2.new(0, 40, 0, 20)
 Select.ZIndex = 10
 Select.Font = Enum.Font.SourceSans
 Select.Text = "Add"
-Select.TextColor3 = Color3.fromRGB(51, 51, 51)
+Select.TextColor3 = Color3.fromRGB(0, 0, 0)
 Select.TextSize = 14.000
 table.insert(shade3,Select)
 table.insert(text2,Select)
 
 ClickDelete.Name = "Click Delete (Hold Key & Click)"
 ClickDelete.Parent = Toggles
-ClickDelete.BackgroundColor3 = Color3.fromRGB(255, 200, 220)
+ClickDelete.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 ClickDelete.BorderSizePixel = 0
 ClickDelete.Position = UDim2.new(0, 0, 0, 25)
 ClickDelete.Size = UDim2.new(0, 200, 0, 20)
 ClickDelete.ZIndex = 10
 ClickDelete.Font = Enum.Font.SourceSans
 ClickDelete.Text = "    Click Delete (Hold Key & Click)"
-ClickDelete.TextColor3 = Color3.fromRGB(70, 70, 70)
+ClickDelete.TextColor3 = Color3.fromRGB(255, 255, 255)
 ClickDelete.TextSize = 14.000
 ClickDelete.TextXAlignment = Enum.TextXAlignment.Left
 table.insert(shade2,ClickDelete)
@@ -1028,21 +1036,21 @@ table.insert(text1,ClickDelete)
 
 Select_2.Name = "Select"
 Select_2.Parent = ClickDelete
-Select_2.BackgroundColor3 = Color3.fromRGB(255, 180, 210)
+Select_2.BackgroundColor3 = Color3.fromRGB(253, 116, 255)
 Select_2.BorderSizePixel = 0
 Select_2.Position = UDim2.new(0, 160, 0, 0)
 Select_2.Size = UDim2.new(0, 40, 0, 20)
 Select_2.ZIndex = 10
 Select_2.Font = Enum.Font.SourceSans
 Select_2.Text = "Add"
-Select_2.TextColor3 = Color3.fromRGB(51, 51, 51)
+Select_2.TextColor3 = Color3.fromRGB(0, 0, 0)
 Select_2.TextSize = 14.000
 table.insert(shade3,Select_2)
 table.insert(text2,Select_2)
 
 Cmdbar_2.Name = "Cmdbar_2"
 Cmdbar_2.Parent = background_2
-Cmdbar_2.BackgroundColor3 = Color3.fromRGB(255, 200, 220)
+Cmdbar_2.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 Cmdbar_2.BorderSizePixel = 0
 Cmdbar_2.Position = UDim2.new(0, 150, 0, 35)
 Cmdbar_2.Size = UDim2.new(0, 150, 0, 20)
@@ -1050,13 +1058,13 @@ Cmdbar_2.ZIndex = 10
 Cmdbar_2.Font = Enum.Font.SourceSans
 Cmdbar_2.PlaceholderText = "Command"
 Cmdbar_2.Text = ""
-Cmdbar_2.TextColor3 = Color3.fromRGB(70, 70, 70)
+Cmdbar_2.TextColor3 = Color3.fromRGB(255, 255, 255)
 Cmdbar_2.TextSize = 14.000
 Cmdbar_2.TextXAlignment = Enum.TextXAlignment.Left
 
 Cmdbar_3.Name = "Cmdbar_3"
 Cmdbar_3.Parent = background_2
-Cmdbar_3.BackgroundColor3 = Color3.fromRGB(255, 200, 220)
+Cmdbar_3.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 Cmdbar_3.BorderSizePixel = 0
 Cmdbar_3.Position = UDim2.new(0, 150, 0, 60)
 Cmdbar_3.Size = UDim2.new(0, 150, 0, 20)
@@ -1064,13 +1072,13 @@ Cmdbar_3.ZIndex = 10
 Cmdbar_3.Font = Enum.Font.SourceSans
 Cmdbar_3.PlaceholderText = "Command 2"
 Cmdbar_3.Text = ""
-Cmdbar_3.TextColor3 = Color3.fromRGB(70, 70, 70)
+Cmdbar_3.TextColor3 = Color3.fromRGB(255, 255, 255)
 Cmdbar_3.TextSize = 14.000
 Cmdbar_3.TextXAlignment = Enum.TextXAlignment.Left
 
 CreateToggle.Name = "CreateToggle"
 CreateToggle.Parent = background_2
-CreateToggle.BackgroundColor3 = Color3.fromRGB(255, 200, 220)
+CreateToggle.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 CreateToggle.BackgroundTransparency = 1
 CreateToggle.BorderSizePixel = 0
 CreateToggle.Position = UDim2.new(0, 152, 0, 10)
@@ -1078,14 +1086,14 @@ CreateToggle.Size = UDim2.new(0, 198, 0, 20)
 CreateToggle.ZIndex = 10
 CreateToggle.Font = Enum.Font.SourceSans
 CreateToggle.Text = "Create Toggle"
-CreateToggle.TextColor3 = Color3.fromRGB(70, 70, 70)
+CreateToggle.TextColor3 = Color3.fromRGB(255, 255, 255)
 CreateToggle.TextSize = 14.000
 CreateToggle.TextXAlignment = Enum.TextXAlignment.Left
 table.insert(text1,CreateToggle)
 
 Button_2.Name = "Button"
 Button_2.Parent = CreateToggle
-Button_2.BackgroundColor3 = Color3.fromRGB(255, 180, 210)
+Button_2.BackgroundColor3 = Color3.fromRGB(253, 116, 255)
 Button_2.BorderSizePixel = 0
 Button_2.Position = UDim2.new(1, -20, 0, 0)
 Button_2.Size = UDim2.new(0, 20, 0, 20)
@@ -1094,7 +1102,7 @@ table.insert(shade3,Button_2)
 
 On_2.Name = "On"
 On_2.Parent = Button_2
-On_2.BackgroundColor3 = Color3.fromRGB(230, 150, 180)
+On_2.BackgroundColor3 = Color3.fromRGB(253, 116, 255)
 On_2.BackgroundTransparency = 1
 On_2.BorderSizePixel = 0
 On_2.Position = UDim2.new(0, 2, 0, 2)
@@ -1102,12 +1110,12 @@ On_2.Size = UDim2.new(0, 16, 0, 16)
 On_2.ZIndex = 10
 On_2.Font = Enum.Font.SourceSans
 On_2.Text = ""
-On_2.TextColor3 = Color3.fromRGB(51, 51, 51)
+On_2.TextColor3 = Color3.fromRGB(0, 0, 0)
 On_2.TextSize = 14.000
 
 shadow_2.Name = "shadow"
 shadow_2.Parent = KeybindEditor
-shadow_2.BackgroundColor3 = Color3.fromRGB(255, 200, 220)
+shadow_2.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 shadow_2.BorderSizePixel = 0
 shadow_2.Size = UDim2.new(0, 360, 0, 20)
 shadow_2.ZIndex = 10
@@ -1120,7 +1128,7 @@ PopupText_2.Size = UDim2.new(1, 0, 0.949999988, 0)
 PopupText_2.ZIndex = 10
 PopupText_2.Font = Enum.Font.SourceSans
 PopupText_2.Text = "Set Keybinds"
-PopupText_2.TextColor3 = Color3.fromRGB(70, 70, 70)
+PopupText_2.TextColor3 = Color3.fromRGB(255, 255, 255)
 PopupText_2.TextSize = 14.000
 PopupText_2.TextWrapped = true
 table.insert(text1,PopupText_2)
@@ -1134,17 +1142,17 @@ Exit_2.ZIndex = 10
 Exit_2.Text = ""
 
 ExitImage_2.Parent = Exit_2
-ExitImage_2.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+ExitImage_2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 ExitImage_2.BackgroundTransparency = 1
 ExitImage_2.Position = UDim2.new(0, 5, 0, 5)
 ExitImage_2.Size = UDim2.new(0, 10, 0, 10)
 ExitImage_2.ZIndex = 10
-ExitImage_2.Image = getcustomasset("infiniteyield/assets/close.png")
+ExitImage_2.Image = getcustomasset("kagiyield/assets/close.png")
 
 PositionsFrame.Name = "PositionsFrame"
 PositionsFrame.Parent = Settings
 PositionsFrame.Active = true
-PositionsFrame.BackgroundColor3 = Color3.fromRGB(255, 220, 230)
+PositionsFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
 PositionsFrame.BorderSizePixel = 0
 PositionsFrame.Size = UDim2.new(0, 250, 0, 175)
 PositionsFrame.Position = UDim2.new(0, 0, 0, 175)
@@ -1153,42 +1161,42 @@ table.insert(shade1,PositionsFrame)
 
 Close_3.Name = "Close"
 Close_3.Parent = PositionsFrame
-Close_3.BackgroundColor3 = Color3.fromRGB(255, 200, 220)
+Close_3.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 Close_3.BorderSizePixel = 0
 Close_3.Position = UDim2.new(0, 205, 0, 150)
 Close_3.Size = UDim2.new(0, 40, 0, 20)
 Close_3.Font = Enum.Font.SourceSans
 Close_3.TextSize = 14
 Close_3.Text = "Close"
-Close_3.TextColor3 = Color3.fromRGB(70, 70, 70)
+Close_3.TextColor3 = Color3.new(1, 1, 1)
 Close_3.ZIndex = 10
 table.insert(shade2,Close_3)
 table.insert(text1,Close_3)
 
 Delete_5.Name = "Delete"
 Delete_5.Parent = PositionsFrame
-Delete_5.BackgroundColor3 = Color3.fromRGB(255, 200, 220)
+Delete_5.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 Delete_5.BorderSizePixel = 0
 Delete_5.Position = UDim2.new(0, 50, 0, 150)
 Delete_5.Size = UDim2.new(0, 40, 0, 20)
 Delete_5.Font = Enum.Font.SourceSans
 Delete_5.TextSize = 14
 Delete_5.Text = "Clear"
-Delete_5.TextColor3 = Color3.fromRGB(70, 70, 70)
+Delete_5.TextColor3 = Color3.new(1, 1, 1)
 Delete_5.ZIndex = 10
 table.insert(shade2,Delete_5)
 table.insert(text1,Delete_5)
 
 Part.Name = "PartGoto"
 Part.Parent = PositionsFrame
-Part.BackgroundColor3 = Color3.fromRGB(255, 200, 220)
+Part.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 Part.BorderSizePixel = 0
 Part.Position = UDim2.new(0, 5, 0, 150)
 Part.Size = UDim2.new(0, 40, 0, 20)
 Part.Font = Enum.Font.SourceSans
 Part.TextSize = 14
 Part.Text = "Part"
-Part.TextColor3 = Color3.fromRGB(70, 70, 70)
+Part.TextColor3 = Color3.new(1, 1, 1)
 Part.ZIndex = 10
 table.insert(shade2,Part)
 table.insert(text1,Part)
@@ -1200,7 +1208,7 @@ Holder_4.BorderSizePixel = 0
 Holder_4.Position = UDim2.new(0, 0, 0, 0)
 Holder_4.Selectable = false
 Holder_4.Size = UDim2.new(0, 250, 0, 145)
-Holder_4.ScrollBarImageColor3 = Color3.fromRGB(78,78,79)
+Holder_4.ScrollBarImageColor3 = Color3.fromRGB(253, 116, 255)
 Holder_4.BottomImage = "rbxasset://textures/ui/Scroll/scroll-middle.png"
 Holder_4.CanvasSize = UDim2.new(0, 0, 0, 0)
 Holder_4.MidImage = "rbxasset://textures/ui/Scroll/scroll-middle.png"
@@ -1211,7 +1219,7 @@ Holder_4.ZIndex = 10
 
 Example_4.Name = "Example"
 Example_4.Parent = PositionsFrame
-Example_4.BackgroundColor3 = Color3.fromRGB(255, 200, 220)
+Example_4.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 Example_4.BorderSizePixel = 0
 Example_4.Size = UDim2.new(0, 10, 0, 20)
 Example_4.Visible = false
@@ -1221,14 +1229,14 @@ table.insert(shade2,Example_4)
 
 Text_5.Name = "Text"
 Text_5.Parent = Example_4
-Text_5.BackgroundColor3 = Color3.fromRGB(255, 200, 220)
+Text_5.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 Text_5.BorderSizePixel = 0
 Text_5.Position = UDim2.new(0, 10, 0, 0)
 Text_5.Size = UDim2.new(0, 240, 0, 20)
 Text_5.Font = Enum.Font.SourceSans
 Text_5.TextSize = 14
 Text_5.Text = "Position"
-Text_5.TextColor3 = Color3.fromRGB(70, 70, 70)
+Text_5.TextColor3 = Color3.new(1, 1, 1)
 Text_5.TextXAlignment = Enum.TextXAlignment.Left
 Text_5.ZIndex = 10
 table.insert(shade2,Text_5)
@@ -1236,28 +1244,28 @@ table.insert(text1,Text_5)
 
 Delete_6.Name = "Delete"
 Delete_6.Parent = Text_5
-Delete_6.BackgroundColor3 = Color3.fromRGB(255, 180, 210)
+Delete_6.BackgroundColor3 = Color3.fromRGB(253, 116, 255)
 Delete_6.BorderSizePixel = 0
 Delete_6.Position = UDim2.new(0, 200, 0, 0)
 Delete_6.Size = UDim2.new(0, 40, 0, 20)
 Delete_6.Font = Enum.Font.SourceSans
 Delete_6.TextSize = 14
 Delete_6.Text = "Delete"
-Delete_6.TextColor3 = Color3.new(0.2, 0.2, 0.2)
+Delete_6.TextColor3 = Color3.new(0, 0, 0)
 Delete_6.ZIndex = 10
 table.insert(shade3,Delete_6)
 table.insert(text2,Delete_6)
 
 TP.Name = "TP"
 TP.Parent = Text_5
-TP.BackgroundColor3 = Color3.fromRGB(255, 180, 210)
+TP.BackgroundColor3 = Color3.fromRGB(253, 116, 255)
 TP.BorderSizePixel = 0
 TP.Position = UDim2.new(0, 155, 0, 0)
 TP.Size = UDim2.new(0, 40, 0, 20)
 TP.Font = Enum.Font.SourceSans
 TP.TextSize = 14
 TP.Text = "Goto"
-TP.TextColor3 = Color3.new(0.2, 0.2, 0.2)
+TP.TextColor3 = Color3.new(0, 0, 0)
 TP.ZIndex = 10
 table.insert(shade3,TP)
 table.insert(text2,TP)
@@ -1265,7 +1273,7 @@ table.insert(text2,TP)
 AliasesFrame.Name = "AliasesFrame"
 AliasesFrame.Parent = Settings
 AliasesFrame.Active = true
-AliasesFrame.BackgroundColor3 = Color3.fromRGB(255, 220, 230)
+AliasesFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
 AliasesFrame.BorderSizePixel = 0
 AliasesFrame.Position = UDim2.new(0, 0, 0, 175)
 AliasesFrame.Size = UDim2.new(0, 250, 0, 175)
@@ -1274,28 +1282,28 @@ table.insert(shade1,AliasesFrame)
 
 Close_2.Name = "Close"
 Close_2.Parent = AliasesFrame
-Close_2.BackgroundColor3 = Color3.fromRGB(255, 200, 220)
+Close_2.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 Close_2.BorderSizePixel = 0
 Close_2.Position = UDim2.new(0, 205, 0, 150)
 Close_2.Size = UDim2.new(0, 40, 0, 20)
 Close_2.Font = Enum.Font.SourceSans
 Close_2.TextSize = 14
 Close_2.Text = "Close"
-Close_2.TextColor3 = Color3.fromRGB(70, 70, 70)
+Close_2.TextColor3 = Color3.new(1, 1, 1)
 Close_2.ZIndex = 10
 table.insert(shade2,Close_2)
 table.insert(text1,Close_2)
 
 Delete_3.Name = "Delete"
 Delete_3.Parent = AliasesFrame
-Delete_3.BackgroundColor3 = Color3.fromRGB(255, 200, 220)
+Delete_3.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 Delete_3.BorderSizePixel = 0
 Delete_3.Position = UDim2.new(0, 5, 0, 150)
 Delete_3.Size = UDim2.new(0, 40, 0, 20)
 Delete_3.Font = Enum.Font.SourceSans
 Delete_3.TextSize = 14
 Delete_3.Text = "Clear"
-Delete_3.TextColor3 = Color3.fromRGB(70, 70, 70)
+Delete_3.TextColor3 = Color3.new(1, 1, 1)
 Delete_3.ZIndex = 10
 table.insert(shade2,Delete_3)
 table.insert(text1,Delete_3)
@@ -1306,7 +1314,7 @@ Holder_3.BackgroundTransparency = 1
 Holder_3.BorderSizePixel = 0
 Holder_3.Position = UDim2.new(0, 0, 0, 0)
 Holder_3.Size = UDim2.new(0, 250, 0, 145)
-Holder_3.ScrollBarImageColor3 = Color3.fromRGB(78,78,79)
+Holder_3.ScrollBarImageColor3 = Color3.fromRGB(253, 116, 255)
 Holder_3.BottomImage = "rbxasset://textures/ui/Scroll/scroll-middle.png"
 Holder_3.CanvasSize = UDim2.new(0, 0, 0, 0)
 Holder_3.MidImage = "rbxasset://textures/ui/Scroll/scroll-middle.png"
@@ -1317,7 +1325,7 @@ Holder_3.ZIndex = 10
 
 Example_3.Name = "Example"
 Example_3.Parent = AliasesFrame
-Example_3.BackgroundColor3 = Color3.fromRGB(255, 200, 220)
+Example_3.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 Example_3.BorderSizePixel = 0
 Example_3.Size = UDim2.new(0, 10, 0, 20)
 Example_3.Visible = false
@@ -1326,14 +1334,14 @@ table.insert(shade2,Example_3)
 
 Text_4.Name = "Text"
 Text_4.Parent = Example_3
-Text_4.BackgroundColor3 = Color3.fromRGB(255, 200, 220)
+Text_4.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 Text_4.BorderSizePixel = 0
 Text_4.Position = UDim2.new(0, 10, 0, 0)
 Text_4.Size = UDim2.new(0, 240, 0, 20)
 Text_4.Font = Enum.Font.SourceSans
 Text_4.TextSize = 14
 Text_4.Text = "honk"
-Text_4.TextColor3 = Color3.fromRGB(70, 70, 70)
+Text_4.TextColor3 = Color3.new(1, 1, 1)
 Text_4.TextXAlignment = Enum.TextXAlignment.Left
 Text_4.ZIndex = 10
 table.insert(shade2,Text_4)
@@ -1341,14 +1349,14 @@ table.insert(text1,Text_4)
 
 Delete_4.Name = "Delete"
 Delete_4.Parent = Text_4
-Delete_4.BackgroundColor3 = Color3.fromRGB(255, 180, 210)
+Delete_4.BackgroundColor3 = Color3.fromRGB(253, 116, 255)
 Delete_4.BorderSizePixel = 0
 Delete_4.Position = UDim2.new(0, 200, 0, 0)
 Delete_4.Size = UDim2.new(0, 40, 0, 20)
 Delete_4.Font = Enum.Font.SourceSans
 Delete_4.TextSize = 14
 Delete_4.Text = "Delete"
-Delete_4.TextColor3 = Color3.new(0.2, 0.2, 0.2)
+Delete_4.TextColor3 = Color3.new(0, 0, 0)
 Delete_4.ZIndex = 10
 table.insert(shade3,Delete_4)
 table.insert(text2,Delete_4)
@@ -1356,7 +1364,7 @@ table.insert(text2,Delete_4)
 PluginsFrame.Name = "PluginsFrame"
 PluginsFrame.Parent = Settings
 PluginsFrame.Active = true
-PluginsFrame.BackgroundColor3 = Color3.fromRGB(255, 220, 230)
+PluginsFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
 PluginsFrame.BorderSizePixel = 0
 PluginsFrame.Position = UDim2.new(0, 0, 0, 175)
 PluginsFrame.Size = UDim2.new(0, 250, 0, 175)
@@ -1365,28 +1373,28 @@ table.insert(shade1,PluginsFrame)
 
 Close_4.Name = "Close"
 Close_4.Parent = PluginsFrame
-Close_4.BackgroundColor3 = Color3.fromRGB(255, 200, 220)
+Close_4.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 Close_4.BorderSizePixel = 0
 Close_4.Position = UDim2.new(0, 205, 0, 150)
 Close_4.Size = UDim2.new(0, 40, 0, 20)
 Close_4.Font = Enum.Font.SourceSans
 Close_4.TextSize = 14
 Close_4.Text = "Close"
-Close_4.TextColor3 = Color3.fromRGB(70, 70, 70)
+Close_4.TextColor3 = Color3.new(1, 1, 1)
 Close_4.ZIndex = 10
 table.insert(shade2,Close_4)
 table.insert(text1,Close_4)
 
 Add_3.Name = "Add"
 Add_3.Parent = PluginsFrame
-Add_3.BackgroundColor3 = Color3.fromRGB(255, 200, 220)
+Add_3.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 Add_3.BorderSizePixel = 0
 Add_3.Position = UDim2.new(0, 5, 0, 150)
 Add_3.Size = UDim2.new(0, 40, 0, 20)
 Add_3.Font = Enum.Font.SourceSans
 Add_3.TextSize = 14
 Add_3.Text = "Add"
-Add_3.TextColor3 = Color3.fromRGB(70, 70, 70)
+Add_3.TextColor3 = Color3.new(1, 1, 1)
 Add_3.ZIndex = 10
 table.insert(shade2,Add_3)
 table.insert(text1,Add_3)
@@ -1398,7 +1406,7 @@ Holder_5.BorderSizePixel = 0
 Holder_5.Position = UDim2.new(0, 0, 0, 0)
 Holder_5.Selectable = false
 Holder_5.Size = UDim2.new(0, 250, 0, 145)
-Holder_5.ScrollBarImageColor3 = Color3.fromRGB(78,78,79)
+Holder_5.ScrollBarImageColor3 = Color3.fromRGB(253, 116, 255)
 Holder_5.BottomImage = "rbxasset://textures/ui/Scroll/scroll-middle.png"
 Holder_5.CanvasSize = UDim2.new(0, 0, 0, 0)
 Holder_5.MidImage = "rbxasset://textures/ui/Scroll/scroll-middle.png"
@@ -1409,7 +1417,7 @@ Holder_5.ZIndex = 10
 
 Example_5.Name = "Example"
 Example_5.Parent = PluginsFrame
-Example_5.BackgroundColor3 = Color3.fromRGB(255, 200, 220)
+Example_5.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 Example_5.BorderSizePixel = 0
 Example_5.Size = UDim2.new(0, 10, 0, 20)
 Example_5.Visible = false
@@ -1418,14 +1426,14 @@ table.insert(shade2,Example_5)
 
 Text_6.Name = "Text"
 Text_6.Parent = Example_5
-Text_6.BackgroundColor3 = Color3.fromRGB(255, 200, 220)
+Text_6.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 Text_6.BorderSizePixel = 0
 Text_6.Position = UDim2.new(0, 10, 0, 0)
 Text_6.Size = UDim2.new(0, 240, 0, 20)
 Text_6.Font = Enum.Font.SourceSans
 Text_6.TextSize = 14
 Text_6.Text = "F4 > Toggle Fly"
-Text_6.TextColor3 = Color3.fromRGB(70, 70, 70)
+Text_6.TextColor3 = Color3.new(1, 1, 1)
 Text_6.TextXAlignment = Enum.TextXAlignment.Left
 Text_6.ZIndex = 10
 table.insert(shade2,Text_6)
@@ -1433,14 +1441,14 @@ table.insert(text1,Text_6)
 
 Delete_7.Name = "Delete"
 Delete_7.Parent = Text_6
-Delete_7.BackgroundColor3 = Color3.fromRGB(255, 180, 210)
+Delete_7.BackgroundColor3 = Color3.fromRGB(253, 116, 255)
 Delete_7.BorderSizePixel = 0
 Delete_7.Position = UDim2.new(0, 200, 0, 0)
 Delete_7.Size = UDim2.new(0, 40, 0, 20)
 Delete_7.Font = Enum.Font.SourceSans
 Delete_7.TextSize = 14
 Delete_7.Text = "Delete"
-Delete_7.TextColor3 = Color3.new(0.2, 0.2, 0.2)
+Delete_7.TextColor3 = Color3.new(0, 0, 0)
 Delete_7.ZIndex = 10
 table.insert(shade3,Delete_7)
 table.insert(text2,Delete_7)
@@ -1457,7 +1465,7 @@ PluginEditor.ZIndex = 10
 background_3.Name = "background"
 background_3.Parent = PluginEditor
 background_3.Active = true
-background_3.BackgroundColor3 = Color3.fromRGB(255, 220, 230)
+background_3.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
 background_3.BorderSizePixel = 0
 background_3.Position = UDim2.new(0, 0, 0, 20)
 background_3.Size = UDim2.new(0, 360, 0, 160)
@@ -1467,7 +1475,7 @@ table.insert(shade1,background_3)
 Dark_2.Name = "Dark"
 Dark_2.Parent = background_3
 Dark_2.Active = true
-Dark_2.BackgroundColor3 = Color3.fromRGB(255, 200, 220)
+Dark_2.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 Dark_2.BorderSizePixel = 0
 Dark_2.Position = UDim2.new(0, 222, 0, 0)
 Dark_2.Size = UDim2.new(0, 2, 0, 160)
@@ -1479,33 +1487,33 @@ Img.Parent = background_3
 Img.BackgroundTransparency = 1
 Img.Position = UDim2.new(0, 242, 0, 3)
 Img.Size = UDim2.new(0, 100, 0, 95)
-Img.Image = getcustomasset("infiniteyield/assets/imgstudiopluginlogo.png")
+Img.Image = getcustomasset("kagiyield/assets/imgstudiopluginlogo.png")
 Img.ZIndex = 10
 
 AddPlugin.Name = "AddPlugin"
 AddPlugin.Parent = background_3
-AddPlugin.BackgroundColor3 = Color3.fromRGB(255, 200, 220)
+AddPlugin.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 AddPlugin.BorderSizePixel = 0
 AddPlugin.Position = UDim2.new(0, 235, 0, 100)
 AddPlugin.Size = UDim2.new(0, 115, 0, 50)
 AddPlugin.Font = Enum.Font.SourceSans
 AddPlugin.TextSize = 14
 AddPlugin.Text = "Add Plugin"
-AddPlugin.TextColor3 = Color3.fromRGB(70, 70, 70)
+AddPlugin.TextColor3 = Color3.new(1, 1, 1)
 AddPlugin.ZIndex = 10
 table.insert(shade2,AddPlugin)
 table.insert(text1,AddPlugin)
 
 FileName.Name = "FileName"
 FileName.Parent = background_3
-FileName.BackgroundColor3 = Color3.fromRGB(255, 200, 220)
+FileName.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 FileName.BorderSizePixel = 0
 FileName.Position = UDim2.new(0.028, 0, 0.625, 0)
 FileName.Size = UDim2.new(0, 200, 0, 50)
 FileName.Font = Enum.Font.SourceSans
 FileName.TextSize = 14
 FileName.Text = "Plugin File Name"
-FileName.TextColor3 = Color3.fromRGB(70, 70, 70)
+FileName.TextColor3 = Color3.new(1, 1, 1)
 FileName.ZIndex = 10
 table.insert(shade2,FileName)
 table.insert(text1,FileName)
@@ -1519,7 +1527,7 @@ About.Size = UDim2.new(0, 187, 0, 49)
 About.Font = Enum.Font.SourceSans
 About.TextSize = 14
 About.Text = "Plugins are .iy files and should be located in the 'workspace' folder of your exploit."
-About.TextColor3 = Color3.fromRGB(70, 70, 70)
+About.TextColor3 = Color3.fromRGB(255, 255, 255)
 About.TextWrapped = true
 About.TextYAlignment = Enum.TextYAlignment.Top
 About.ZIndex = 10
@@ -1534,7 +1542,7 @@ Directions_2.Size = UDim2.new(0, 187, 0, 49)
 Directions_2.Font = Enum.Font.SourceSans
 Directions_2.TextSize = 14
 Directions_2.Text = "Type the name of the plugin file you want to add below."
-Directions_2.TextColor3 = Color3.fromRGB(70, 70, 70)
+Directions_2.TextColor3 = Color3.fromRGB(255, 255, 255)
 Directions_2.TextWrapped = true
 Directions_2.TextYAlignment = Enum.TextYAlignment.Top
 Directions_2.ZIndex = 10
@@ -1542,7 +1550,7 @@ table.insert(text1,Directions_2)
 
 shadow_3.Name = "shadow"
 shadow_3.Parent = PluginEditor
-shadow_3.BackgroundColor3 = Color3.fromRGB(255, 200, 220)
+shadow_3.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 shadow_3.BorderSizePixel = 0
 shadow_3.Size = UDim2.new(0, 360, 0, 20)
 shadow_3.ZIndex = 10
@@ -1556,7 +1564,7 @@ PopupText_3.ZIndex = 10
 PopupText_3.Font = Enum.Font.SourceSans
 PopupText_3.TextSize = 14
 PopupText_3.Text = "Add Plugins"
-PopupText_3.TextColor3 = Color3.fromRGB(70, 70, 70)
+PopupText_3.TextColor3 = Color3.new(1, 1, 1)
 PopupText_3.TextWrapped = true
 table.insert(text1,PopupText_3)
 
@@ -1569,11 +1577,11 @@ Exit_3.Text = ""
 Exit_3.ZIndex = 10
 
 ExitImage_3.Parent = Exit_3
-ExitImage_3.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+ExitImage_3.BackgroundColor3 = Color3.new(1, 1, 1)
 ExitImage_3.BackgroundTransparency = 1
 ExitImage_3.Position = UDim2.new(0, 5, 0, 5)
 ExitImage_3.Size = UDim2.new(0, 10, 0, 10)
-ExitImage_3.Image = getcustomasset("infiniteyield/assets/close.png")
+ExitImage_3.Image = getcustomasset("kagiyield/assets/close.png")
 ExitImage_3.ZIndex = 10
 
 AliasHint.Name = "AliasHint"
@@ -1585,8 +1593,8 @@ AliasHint.Size = UDim2.new(0, 200, 0, 50)
 AliasHint.Font = Enum.Font.SourceSansItalic
 AliasHint.TextSize = 16
 AliasHint.Text = "Add aliases by using the 'addalias' command"
-AliasHint.TextColor3 = Color3.fromRGB(70, 70, 70)
-AliasHint.TextStrokeColor3 = Color3.fromRGB(70, 70, 70)
+AliasHint.TextColor3 = Color3.new(1, 1, 1)
+AliasHint.TextStrokeColor3 = Color3.new(1, 1, 1)
 AliasHint.TextWrapped = true
 AliasHint.ZIndex = 10
 table.insert(text1,AliasHint)
@@ -1599,9 +1607,9 @@ PluginsHint.Position = UDim2.new(0, 25, 0, 40)
 PluginsHint.Size = UDim2.new(0, 200, 0, 50)
 PluginsHint.Font = Enum.Font.SourceSansItalic
 PluginsHint.TextSize = 16
-PluginsHint.Text = "Download plugins from the IY Discord (discord.gg/78ZuWSq)"
-PluginsHint.TextColor3 = Color3.fromRGB(70, 70, 70)
-PluginsHint.TextStrokeColor3 = Color3.fromRGB(70, 70, 70)
+PluginsHint.Text = "Download plugins from the Kagi Yield Discord (discord.gg/78ZuWSq)"
+PluginsHint.TextColor3 = Color3.new(1, 1, 1)
+PluginsHint.TextStrokeColor3 = Color3.new(1, 1, 1)
 PluginsHint.TextWrapped = true
 PluginsHint.ZIndex = 10
 table.insert(text1,PluginsHint)
@@ -1615,8 +1623,8 @@ PositionsHint.Size = UDim2.new(0, 200, 0, 70)
 PositionsHint.Font = Enum.Font.SourceSansItalic
 PositionsHint.TextSize = 16
 PositionsHint.Text = "Use the 'swp' or 'setwaypoint' command to add a position using your character (NOTE: Part teleports will not save)"
-PositionsHint.TextColor3 = Color3.fromRGB(70, 70, 70)
-PositionsHint.TextStrokeColor3 = Color3.fromRGB(70, 70, 70)
+PositionsHint.TextColor3 = Color3.new(1, 1, 1)
+PositionsHint.TextStrokeColor3 = Color3.new(1, 1, 1)
 PositionsHint.TextWrapped = true
 PositionsHint.ZIndex = 10
 table.insert(text1,PositionsHint)
@@ -1632,7 +1640,7 @@ ToPartFrame.ZIndex = 10
 background_4.Name = "background"
 background_4.Parent = ToPartFrame
 background_4.Active = true
-background_4.BackgroundColor3 = Color3.fromRGB(255, 220, 230)
+background_4.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
 background_4.BorderSizePixel = 0
 background_4.Position = UDim2.new(0, 0, 0, 20)
 background_4.Size = UDim2.new(0, 360, 0, 117)
@@ -1641,28 +1649,28 @@ table.insert(shade1,background_4)
 
 ChoosePart.Name = "ChoosePart"
 ChoosePart.Parent = background_4
-ChoosePart.BackgroundColor3 = Color3.fromRGB(255, 200, 220)
+ChoosePart.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 ChoosePart.BorderSizePixel = 0
 ChoosePart.Position = UDim2.new(0, 100, 0, 55)
 ChoosePart.Size = UDim2.new(0, 75, 0, 30)
 ChoosePart.Font = Enum.Font.SourceSans
 ChoosePart.TextSize = 14
 ChoosePart.Text = "Select Part"
-ChoosePart.TextColor3 = Color3.fromRGB(70, 70, 70)
+ChoosePart.TextColor3 = Color3.new(1, 1, 1)
 ChoosePart.ZIndex = 10
 table.insert(shade2,ChoosePart)
 table.insert(text1,ChoosePart)
 
 CopyPath.Name = "CopyPath"
 CopyPath.Parent = background_4
-CopyPath.BackgroundColor3 = Color3.fromRGB(255, 200, 220)
+CopyPath.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 CopyPath.BorderSizePixel = 0
 CopyPath.Position = UDim2.new(0, 185, 0, 55)
 CopyPath.Size = UDim2.new(0, 75, 0, 30)
 CopyPath.Font = Enum.Font.SourceSans
 CopyPath.TextSize = 14
 CopyPath.Text = "Copy Path"
-CopyPath.TextColor3 = Color3.fromRGB(70, 70, 70)
+CopyPath.TextColor3 = Color3.new(1, 1, 1)
 CopyPath.ZIndex = 10
 table.insert(shade2,CopyPath)
 table.insert(text1,CopyPath)
@@ -1676,7 +1684,7 @@ Directions_3.Size = UDim2.new(0, 257, 0, 32)
 Directions_3.Font = Enum.Font.SourceSans
 Directions_3.TextSize = 14
 Directions_3.Text = 'Click on a part and then click the "Select Part" button below to set it as a teleport location'
-Directions_3.TextColor3 = Color3.fromRGB(70, 70, 70)
+Directions_3.TextColor3 = Color3.new(1, 1, 1)
 Directions_3.TextWrapped = true
 Directions_3.TextYAlignment = Enum.TextYAlignment.Top
 Directions_3.ZIndex = 10
@@ -1691,7 +1699,7 @@ Path.Size = UDim2.new(0, 360, 0, 16)
 Path.Font = Enum.Font.SourceSansItalic
 Path.TextSize = 14
 Path.Text = ""
-Path.TextColor3 = Color3.fromRGB(70, 70, 70)
+Path.TextColor3 = Color3.new(1, 1, 1)
 Path.TextScaled = true
 Path.TextWrapped = true
 Path.TextYAlignment = Enum.TextYAlignment.Top
@@ -1700,7 +1708,7 @@ table.insert(text1,Path)
 
 shadow_4.Name = "shadow"
 shadow_4.Parent = ToPartFrame
-shadow_4.BackgroundColor3 = Color3.fromRGB(255, 200, 220)
+shadow_4.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 shadow_4.BorderSizePixel = 0
 shadow_4.Size = UDim2.new(0, 360, 0, 20)
 shadow_4.ZIndex = 10
@@ -1714,7 +1722,7 @@ PopupText_5.ZIndex = 10
 PopupText_5.Font = Enum.Font.SourceSans
 PopupText_5.TextSize = 14
 PopupText_5.Text = "Teleport to Part"
-PopupText_5.TextColor3 = Color3.fromRGB(70, 70, 70)
+PopupText_5.TextColor3 = Color3.new(1, 1, 1)
 PopupText_5.TextWrapped = true
 table.insert(text1,PopupText_5)
 
@@ -1727,11 +1735,11 @@ Exit_4.Text = ""
 Exit_4.ZIndex = 10
 
 ExitImage_5.Parent = Exit_4
-ExitImage_5.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+ExitImage_5.BackgroundColor3 = Color3.new(1, 1, 1)
 ExitImage_5.BackgroundTransparency = 1
 ExitImage_5.Position = UDim2.new(0, 5, 0, 5)
 ExitImage_5.Size = UDim2.new(0, 10, 0, 10)
-ExitImage_5.Image = getcustomasset("infiniteyield/assets/close.png")
+ExitImage_5.Image = getcustomasset("kagiyield/assets/close.png")
 ExitImage_5.ZIndex = 10
 
 logs.Name = randomString()
@@ -1744,7 +1752,7 @@ logs.ZIndex = 10
 
 shadow.Name = "shadow"
 shadow.Parent = logs
-shadow.BackgroundColor3 = Color3.fromRGB(255, 200, 220)
+shadow.BackgroundColor3 = Color3.new(0.180392, 0.180392, 0.184314)
 shadow.BorderSizePixel = 0
 shadow.Position = UDim2.new(0, 0, 0.00999999978, 0)
 shadow.Size = UDim2.new(0, 338, 0, 20)
@@ -1760,11 +1768,11 @@ Hide.ZIndex = 10
 Hide.Text = ""
 
 ImageLabel.Parent = Hide
-ImageLabel.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+ImageLabel.BackgroundColor3 = Color3.new(1, 1, 1)
 ImageLabel.BackgroundTransparency = 1
 ImageLabel.Position = UDim2.new(0, 3, 0, 3)
 ImageLabel.Size = UDim2.new(0, 14, 0, 14)
-ImageLabel.Image = getcustomasset("infiniteyield/assets/minimize.png")
+ImageLabel.Image = getcustomasset("kagiyield/assets/minimize.png")
 ImageLabel.ZIndex = 10
 
 PopupText.Name = "PopupText"
@@ -1775,7 +1783,7 @@ PopupText.ZIndex = 10
 PopupText.Font = Enum.Font.SourceSans
 PopupText.FontSize = Enum.FontSize.Size14
 PopupText.Text = "Logs"
-PopupText.TextColor3 = Color3.fromRGB(70, 70, 70)
+PopupText.TextColor3 = Color3.new(1, 1, 1)
 PopupText.TextWrapped = true
 table.insert(text1,PopupText)
 
@@ -1788,17 +1796,17 @@ Exit.ZIndex = 10
 Exit.Text = ""
 
 ImageLabel_2.Parent = Exit
-ImageLabel_2.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+ImageLabel_2.BackgroundColor3 = Color3.new(1, 1, 1)
 ImageLabel_2.BackgroundTransparency = 1
 ImageLabel_2.Position = UDim2.new(0, 5, 0, 5)
 ImageLabel_2.Size = UDim2.new(0, 10, 0, 10)
-ImageLabel_2.Image = getcustomasset("infiniteyield/assets/close.png")
+ImageLabel_2.Image = getcustomasset("kagiyield/assets/close.png")
 ImageLabel_2.ZIndex = 10
 
 background.Name = "background"
 background.Parent = logs
 background.Active = true
-background.BackgroundColor3 = Color3.fromRGB(255, 220, 230)
+background.BackgroundColor3 = Color3.new(0.141176, 0.141176, 0.145098)
 background.BorderSizePixel = 0
 background.ClipsDescendants = true
 background.Position = UDim2.new(0, 0, 1, 0)
@@ -1808,7 +1816,7 @@ background.ZIndex = 10
 chat.Name = "chat"
 chat.Parent = background
 chat.Active = true
-chat.BackgroundColor3 = Color3.fromRGB(255, 220, 230)
+chat.BackgroundColor3 = Color3.new(0.141176, 0.141176, 0.145098)
 chat.BorderSizePixel = 0
 chat.ClipsDescendants = true
 chat.Size = UDim2.new(0, 338, 0, 245)
@@ -1817,7 +1825,7 @@ table.insert(shade1,chat)
 
 Clear.Name = "Clear"
 Clear.Parent = chat
-Clear.BackgroundColor3 = Color3.fromRGB(255, 200, 220)
+Clear.BackgroundColor3 = Color3.new(0.180392, 0.180392, 0.184314)
 Clear.BorderSizePixel = 0
 Clear.Position = UDim2.new(0, 5, 0, 220)
 Clear.Size = UDim2.new(0, 50, 0, 20)
@@ -1825,13 +1833,13 @@ Clear.ZIndex = 10
 Clear.Font = Enum.Font.SourceSans
 Clear.FontSize = Enum.FontSize.Size14
 Clear.Text = "Clear"
-Clear.TextColor3 = Color3.fromRGB(70, 70, 70)
+Clear.TextColor3 = Color3.new(1, 1, 1)
 table.insert(shade2,Clear)
 table.insert(text1,Clear)
 
 SaveChatlogs.Name = "SaveChatlogs"
 SaveChatlogs.Parent = chat
-SaveChatlogs.BackgroundColor3 = Color3.fromRGB(255, 200, 220)
+SaveChatlogs.BackgroundColor3 = Color3.new(0.180392, 0.180392, 0.184314)
 SaveChatlogs.BorderSizePixel = 0
 SaveChatlogs.Position = UDim2.new(0, 258, 0, 220)
 SaveChatlogs.Size = UDim2.new(0, 75, 0, 20)
@@ -1839,13 +1847,13 @@ SaveChatlogs.ZIndex = 10
 SaveChatlogs.Font = Enum.Font.SourceSans
 SaveChatlogs.FontSize = Enum.FontSize.Size14
 SaveChatlogs.Text = "Save To .txt"
-SaveChatlogs.TextColor3 = Color3.fromRGB(70, 70, 70)
+SaveChatlogs.TextColor3 = Color3.new(1, 1, 1)
 table.insert(shade2,SaveChatlogs)
 table.insert(text1,SaveChatlogs)
 
 Toggle.Name = "Toggle"
 Toggle.Parent = chat
-Toggle.BackgroundColor3 = Color3.fromRGB(255, 200, 220)
+Toggle.BackgroundColor3 = Color3.new(0.180392, 0.180392, 0.184314)
 Toggle.BorderSizePixel = 0
 Toggle.Position = UDim2.new(0, 60, 0, 220)
 Toggle.Size = UDim2.new(0, 66, 0, 20)
@@ -1853,13 +1861,13 @@ Toggle.ZIndex = 10
 Toggle.Font = Enum.Font.SourceSans
 Toggle.FontSize = Enum.FontSize.Size14
 Toggle.Text = "Disabled"
-Toggle.TextColor3 = Color3.fromRGB(70, 70, 70)
+Toggle.TextColor3 = Color3.new(1, 1, 1)
 table.insert(shade2,Toggle)
 table.insert(text1,Toggle)
 
 scroll_2.Name = "scroll"
 scroll_2.Parent = chat
-scroll_2.BackgroundColor3 = Color3.fromRGB(255, 200, 220)
+scroll_2.BackgroundColor3 = Color3.new(0.180392, 0.180392, 0.184314)
 scroll_2.BorderSizePixel = 0
 scroll_2.Position = UDim2.new(0, 5, 0, 25)
 scroll_2.Size = UDim2.new(0, 328, 0, 190)
@@ -1874,7 +1882,7 @@ table.insert(shade2,scroll_2)
 join.Name = "join"
 join.Parent = background
 join.Active = true
-join.BackgroundColor3 = Color3.fromRGB(255, 220, 230)
+join.BackgroundColor3 = Color3.new(0.141176, 0.141176, 0.145098)
 join.BorderSizePixel = 0
 join.ClipsDescendants = true
 join.Size = UDim2.new(0, 338, 0, 245)
@@ -1884,7 +1892,7 @@ table.insert(shade1,join)
 
 Toggle_2.Name = "Toggle"
 Toggle_2.Parent = join
-Toggle_2.BackgroundColor3 = Color3.fromRGB(255, 200, 220)
+Toggle_2.BackgroundColor3 = Color3.new(0.180392, 0.180392, 0.184314)
 Toggle_2.BorderSizePixel = 0
 Toggle_2.Position = UDim2.new(0, 60, 0, 220)
 Toggle_2.Size = UDim2.new(0, 66, 0, 20)
@@ -1892,13 +1900,13 @@ Toggle_2.ZIndex = 10
 Toggle_2.Font = Enum.Font.SourceSans
 Toggle_2.FontSize = Enum.FontSize.Size14
 Toggle_2.Text = "Disabled"
-Toggle_2.TextColor3 = Color3.fromRGB(70, 70, 70)
+Toggle_2.TextColor3 = Color3.new(1, 1, 1)
 table.insert(shade2,Toggle_2)
 table.insert(text1,Toggle_2)
 
 Clear_2.Name = "Clear"
 Clear_2.Parent = join
-Clear_2.BackgroundColor3 = Color3.fromRGB(255, 200, 220)
+Clear_2.BackgroundColor3 = Color3.new(0.180392, 0.180392, 0.184314)
 Clear_2.BorderSizePixel = 0
 Clear_2.Position = UDim2.new(0, 5, 0, 220)
 Clear_2.Size = UDim2.new(0, 50, 0, 20)
@@ -1906,13 +1914,13 @@ Clear_2.ZIndex = 10
 Clear_2.Font = Enum.Font.SourceSans
 Clear_2.FontSize = Enum.FontSize.Size14
 Clear_2.Text = "Clear"
-Clear_2.TextColor3 = Color3.fromRGB(70, 70, 70)
+Clear_2.TextColor3 = Color3.new(1, 1, 1)
 table.insert(shade2,Clear_2)
 table.insert(text1,Clear_2)
 
 scroll_3.Name = "scroll"
 scroll_3.Parent = join
-scroll_3.BackgroundColor3 = Color3.fromRGB(255, 200, 220)
+scroll_3.BackgroundColor3 = Color3.new(0.180392, 0.180392, 0.184314)
 scroll_3.BorderSizePixel = 0
 scroll_3.Position = UDim2.new(0, 5, 0, 25)
 scroll_3.Size = UDim2.new(0, 328, 0, 190)
@@ -1926,7 +1934,7 @@ table.insert(shade2,scroll_3)
 
 selectChat.Name = "selectChat"
 selectChat.Parent = background
-selectChat.BackgroundColor3 = Color3.fromRGB(255, 200, 220)
+selectChat.BackgroundColor3 = Color3.new(0.180392, 0.180392, 0.184314)
 selectChat.BorderSizePixel = 0
 selectChat.Position = UDim2.new(0, 5, 0, 5)
 selectChat.Size = UDim2.new(0, 164, 0, 20)
@@ -1934,13 +1942,13 @@ selectChat.ZIndex = 10
 selectChat.Font = Enum.Font.SourceSans
 selectChat.FontSize = Enum.FontSize.Size14
 selectChat.Text = "Chat Logs"
-selectChat.TextColor3 = Color3.fromRGB(70, 70, 70)
+selectChat.TextColor3 = Color3.new(1, 1, 1)
 table.insert(shade2,selectChat)
 table.insert(text1,selectChat)
 
 selectJoin.Name = "selectJoin"
 selectJoin.Parent = background
-selectJoin.BackgroundColor3 = Color3.fromRGB(255, 180, 210)
+selectJoin.BackgroundColor3 = Color3.new(0.305882, 0.305882, 0.309804)
 selectJoin.BorderSizePixel = 0
 selectJoin.Position = UDim2.new(0, 169, 0, 5)
 selectJoin.Size = UDim2.new(0, 164, 0, 20)
@@ -1948,7 +1956,7 @@ selectJoin.ZIndex = 10
 selectJoin.Font = Enum.Font.SourceSans
 selectJoin.FontSize = Enum.FontSize.Size14
 selectJoin.Text = "Join Logs"
-selectJoin.TextColor3 = Color3.fromRGB(70, 70, 70)
+selectJoin.TextColor3 = Color3.new(1, 1, 1)
 table.insert(shade3,selectJoin)
 table.insert(text1,selectJoin)
 
@@ -2277,6 +2285,7 @@ eventEditor = (function()
 						for count,arg in pairs(args) do
 							cmdStr = cmdStr:gsub("%$"..count,arg)
 						end
+						if cmdStr:lower():match("plugin") then return end
 						wait(cmd[3] or 0)
 						execCmd(cmdStr)
 					end))
@@ -2290,7 +2299,7 @@ eventEditor = (function()
 		{2,"Frame",{BackgroundColor3=currentShade2,BorderSizePixel=0,Name="TopBar",Parent={1},Size=UDim2.new(1,0,0,20),ZIndex=10,}},
 		{3,"TextLabel",{BackgroundColor3=Color3.new(1,1,1),BackgroundTransparency=1,Font=3,Name="Title",Parent={2},Position=UDim2.new(0,0,0,0),Size=UDim2.new(1,0,0.95,0),Text="Event Editor",TextColor3=Color3.new(1,1,1),TextSize=14,TextXAlignment=Enum.TextXAlignment.Center,ZIndex=10,}},
 		{4,"TextButton",{BackgroundColor3=Color3.new(1,1,1),BackgroundTransparency=1,Font=3,Name="Close",Parent={2},Position=UDim2.new(1,-20,0,0),Size=UDim2.new(0,20,0,20),Text="",TextColor3=Color3.new(1,1,1),TextSize=14,ZIndex=10,}},
-		{5,"ImageLabel",{BackgroundColor3=Color3.new(1,1,1),BackgroundTransparency=1,Image=getcustomasset("infiniteyield/assets/close.png"),Parent={4},Position=UDim2.new(0,5,0,5),Size=UDim2.new(0,10,0,10),ZIndex=10,}},
+		{5,"ImageLabel",{BackgroundColor3=Color3.new(1,1,1),BackgroundTransparency=1,Image=getcustomasset("kagiyield/assets/close.png"),Parent={4},Position=UDim2.new(0,5,0,5),Size=UDim2.new(0,10,0,10),ZIndex=10,}},
 		{6,"Frame",{BackgroundColor3=currentShade1,BorderSizePixel=0,Name="Content",Parent={1},Position=UDim2.new(0,0,0,20),Size=UDim2.new(1,0,0,202),ZIndex=10,}},
 		{7,"ScrollingFrame",{BackgroundColor3=Color3.new(0.14117647707462,0.14117647707462,0.14509804546833),BackgroundTransparency=1,BorderColor3=Color3.new(0.15686275064945,0.15686275064945,0.15686275064945),BorderSizePixel=0,BottomImage="rbxasset://textures/ui/Scroll/scroll-middle.png",CanvasSize=UDim2.new(0,0,0,100),Name="List",Parent={6},Position=UDim2.new(0,5,0,5),ScrollBarImageColor3=Color3.new(0.30588236451149,0.30588236451149,0.3098039329052),ScrollBarThickness=8,Size=UDim2.new(1,-10,1,-10),TopImage="rbxasset://textures/ui/Scroll/scroll-middle.png",ZIndex=10,}},
 		{8,"Frame",{BackgroundColor3=Color3.new(1,1,1),BackgroundTransparency=1,Name="Holder",Parent={7},Size=UDim2.new(1,0,1,0),ZIndex=10,}},
@@ -2346,7 +2355,7 @@ eventEditor = (function()
 		{50,"TextBox",{BackgroundColor3=Color3.new(1,1,1),BackgroundTransparency=1,ClearTextOnFocus=false,Font=3,Parent={49},PlaceholderColor3=Color3.new(1,1,1),Position=UDim2.new(0,5,0,0),Size=UDim2.new(1,-45,0,20),Text="a\\b\\c\\d",TextColor3=currentText1,TextSize=14,TextXAlignment=0,ZIndex=10,}},
 		{51,"TextButton",{BackgroundColor3=currentShade1,BorderSizePixel=0,Font=3,Name="Delete",Parent={49},Position=UDim2.new(1,-20,0,0),Size=UDim2.new(0,20,0,20),Text="X",TextColor3=Color3.new(1,1,1),TextSize=18,ZIndex=10,}},
 		{52,"TextButton",{BackgroundColor3=currentShade1,BorderSizePixel=0,Font=3,Name="Settings",Parent={49},Position=UDim2.new(1,-40,0,0),Size=UDim2.new(0,20,0,20),Text="",TextColor3=Color3.new(1,1,1),TextSize=18,ZIndex=10,}},
-		{53,"ImageLabel",{BackgroundColor3=Color3.new(1,1,1),BackgroundTransparency=1,Image=getcustomasset("infiniteyield/assets/settings.png"),Parent={52},Position=UDim2.new(0,2,0,2),Size=UDim2.new(0,16,0,16),ZIndex=10,}},
+		{53,"ImageLabel",{BackgroundColor3=Color3.new(1,1,1),BackgroundTransparency=1,Image=getcustomasset("kagiyield/assets/settings.png"),Parent={52},Position=UDim2.new(0,2,0,2),Size=UDim2.new(0,16,0,16),ZIndex=10,}},
 	})
 	main.Name = randomString()
 	local mainFrame = main:WaitForChild("Content")
@@ -2764,7 +2773,7 @@ reference = (function()
 		{2,"Frame",{BackgroundColor3=Color3.new(0.1803921610117,0.1803921610117,0.1843137294054),BorderSizePixel=0,Name="TopBar",Parent={1},Size=UDim2.new(1,0,0,20),ZIndex=10,}},
 		{3,"TextLabel",{BackgroundColor3=Color3.new(1,1,1),BackgroundTransparency=1,Font=3,Name="Title",Parent={2},Size=UDim2.new(1,0,0.94999998807907,0),Text="Reference",TextColor3=Color3.new(1,1,1),TextSize=14,ZIndex=10,}},
 		{4,"TextButton",{BackgroundColor3=Color3.new(1,1,1),BackgroundTransparency=1,Font=3,Name="Close",Parent={2},Position=UDim2.new(1,-20,0,0),Size=UDim2.new(0,20,0,20),Text="",TextColor3=Color3.new(1,1,1),TextSize=14,ZIndex=10,}},
-		{5,"ImageLabel",{BackgroundColor3=Color3.new(1,1,1),BackgroundTransparency=1,Image=getcustomasset("infiniteyield/assets/close.png"),Parent={4},Position=UDim2.new(0,5,0,5),Size=UDim2.new(0,10,0,10),ZIndex=10,}},
+		{5,"ImageLabel",{BackgroundColor3=Color3.new(1,1,1),BackgroundTransparency=1,Image=getcustomasset("kagiyield/assets/close.png"),Parent={4},Position=UDim2.new(0,5,0,5),Size=UDim2.new(0,10,0,10),ZIndex=10,}},
 		{6,"Frame",{BackgroundColor3=Color3.new(0.14117647707462,0.14117647707462,0.14509804546833),BorderSizePixel=0,Name="Content",Parent={1},Position=UDim2.new(0,0,0,20),Size=UDim2.new(1,0,0,300),ZIndex=10,}},
 		{7,"ScrollingFrame",{BackgroundColor3=Color3.new(0.14117647707462,0.14117647707462,0.14509804546833),BackgroundTransparency=1,BorderColor3=Color3.new(0.15686275064945,0.15686275064945,0.15686275064945),BorderSizePixel=0,BottomImage="rbxasset://textures/ui/Scroll/scroll-middle.png",CanvasSize=UDim2.new(0,0,0,1313),Name="List",Parent={6},ScrollBarImageColor3=Color3.new(0.30588236451149,0.30588236451149,0.3098039329052),ScrollBarThickness=8,Size=UDim2.new(1,0,1,0),TopImage="rbxasset://textures/ui/Scroll/scroll-middle.png",VerticalScrollBarInset=2,ZIndex=10,}},
 		{8,"UIListLayout",{Parent={7},SortOrder=2,}},
@@ -2873,7 +2882,7 @@ reference = (function()
 		{111,"TextLabel",{BackgroundColor3=Color3.new(1,1,1),BackgroundTransparency=1,Font=3,Name="Text",Parent={105},Position=UDim2.new(0,8,0,148),Size=UDim2.new(1,-8,0,16),Text="Setting up 'goto $1' on the OnChatted event will teleport you to any player that chats.",TextColor3=Color3.new(1,1,1),TextSize=14,TextWrapped=true,TextXAlignment=0,TextYAlignment=0,ZIndex=10,}},
 		{112,"Frame",{BackgroundColor3=Color3.new(1,1,1),BackgroundTransparency=1,Name="Section",Parent={7},Size=UDim2.new(1,0,0,105),ZIndex=10,}},
 		{113,"TextLabel",{BackgroundColor3=Color3.new(1,1,1),BackgroundTransparency=1,Font=4,Name="Header",Parent={112},Position=UDim2.new(0,8,0,5),Size=UDim2.new(1,-8,0,20),Text="Get Further Help",TextColor3=Color3.new(1,1,1),TextSize=20,TextXAlignment=0,ZIndex=10,}},
-		{114,"TextLabel",{BackgroundColor3=Color3.new(1,1,1),BackgroundTransparency=1,Font=3,Name="Text",Parent={112},Position=UDim2.new(0,8,0,30),Size=UDim2.new(1,-8,0,32),Text="You can join the Discord server to get support with IY,  and read up on more documentation such as the Plugin API.",TextColor3=Color3.new(1,1,1),TextSize=14,TextWrapped=true,TextXAlignment=0,ZIndex=10,}},
+		{114,"TextLabel",{BackgroundColor3=Color3.new(1,1,1),BackgroundTransparency=1,Font=3,Name="Text",Parent={112},Position=UDim2.new(0,8,0,30),Size=UDim2.new(1,-8,0,32),Text="You can join the Discord server to get support with Kagi Yield (IY),  and read up on more documentation such as the Plugin API.",TextColor3=Color3.new(1,1,1),TextSize=14,TextWrapped=true,TextXAlignment=0,ZIndex=10,}},
 		{115,"Frame",{BackgroundColor3=Color3.new(0.1803921610117,0.1803921610117,0.1843137294054),BorderSizePixel=0,Name="Line",Parent={112},Position=UDim2.new(0,10,1,-1),Size=UDim2.new(1,-20,0,1),Visible=false,ZIndex=10,}},
 		{116,"TextButton",{BackgroundColor3=Color3.new(0.48627451062202,0.61960786581039,0.85098040103912),BorderColor3=Color3.new(0.1803921610117,0.1803921610117,0.1843137294054),Font=4,Name="InviteButton",Parent={112},Position=UDim2.new(0,5,0,75),Size=UDim2.new(1,-10,0,25),Text="Copy Discord Invite Link (https://discord.gg/78ZuWSq)",TextColor3=Color3.new(0.1803921610117,0.1803921610117,0.1843137294054),TextSize=16,ZIndex=10,}},
 	})
@@ -2912,12 +2921,12 @@ reference = (function()
 	end)
 end)()
 
-currentShade1 = Color3.fromRGB(255, 220, 230)
-currentShade2 = Color3.fromRGB(255, 200, 220)
-currentShade3 = Color3.fromRGB(255, 180, 210)
-currentText1 = Color3.fromRGB(70, 70, 70)
-currentText2 = Color3.new(0.2, 0.2, 0.2)
-currentScroll = Color3.fromRGB(255, 160, 200)
+currentShade1 = Color3.fromRGB(15, 15, 15)
+currentShade2 = Color3.fromRGB(25, 25, 25)
+currentShade3 = Color3.fromRGB(253, 116, 255)
+currentText1 = Color3.fromRGB(253, 116, 255)
+currentText2 = Color3.new(0, 0, 0)
+currentScroll = Color3.fromRGB(253, 116, 255)
 
 defaultGuiScale = IsOnMobile and 0.9 or 1
 defaultsettings = {
@@ -2978,7 +2987,7 @@ function createPopup(title, text)
 	background.Name = "background"
 	background.Parent = Popup
 	background.Active = true
-	background.BackgroundColor3 = Color3.fromRGB(255, 220, 230)
+	background.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
 	background.BorderSizePixel = 0
 	background.Position = UDim2.new(0, 0, 0, 20)
 	background.Size = UDim2.new(0, 360, 0, 205)
@@ -2993,7 +3002,7 @@ function createPopup(title, text)
 	Directions.Font = Enum.Font.SourceSans
 	Directions.TextSize = 14
 	Directions.Text = text
-	Directions.TextColor3 = Color3.fromRGB(70, 70, 70)
+	Directions.TextColor3 = Color3.new(1, 1, 1)
 	Directions.TextWrapped = true
 	Directions.TextXAlignment = Enum.TextXAlignment.Left
 	Directions.TextYAlignment = Enum.TextYAlignment.Top
@@ -3001,7 +3010,7 @@ function createPopup(title, text)
 
 	shadow.Name = "shadow"
 	shadow.Parent = Popup
-	shadow.BackgroundColor3 = Color3.fromRGB(255, 200, 220)
+	shadow.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 	shadow.BorderSizePixel = 0
 	shadow.Size = UDim2.new(0, 360, 0, 20)
 	shadow.ZIndex = 10
@@ -3014,7 +3023,7 @@ function createPopup(title, text)
 	PopupText.Font = Enum.Font.SourceSans
 	PopupText.TextSize = 14
 	PopupText.Text = title
-	PopupText.TextColor3 = Color3.fromRGB(70, 70, 70)
+	PopupText.TextColor3 = Color3.new(1, 1, 1)
 	PopupText.TextWrapped = true
 
 	Exit.Name = "Exit"
@@ -3026,11 +3035,11 @@ function createPopup(title, text)
 	Exit.ZIndex = 10
 
 	ExitImage.Parent = Exit
-	ExitImage.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+	ExitImage.BackgroundColor3 = Color3.new(1, 1, 1)
 	ExitImage.BackgroundTransparency = 1
 	ExitImage.Position = UDim2.new(0, 5, 0, 5)
 	ExitImage.Size = UDim2.new(0, 10, 0, 10)
-	ExitImage.Image = getcustomasset("infiniteyield/assets/close.png")
+	ExitImage.Image = getcustomasset("kagiyield/assets/close.png")
 	ExitImage.ZIndex = 10
 
 	Popup:TweenPosition(UDim2.new(0.5, -180, 0, 150), "InOut", "Quart", 0.5, true, nil)
@@ -3046,7 +3055,7 @@ local loadedEventData = nil
 local jsonAttempts = 0
 function saves()
 	if writefileExploit() and readfileExploit() and jsonAttempts < 10 then
-		local readSuccess, out = readfile("KY.iy", true)
+		local readSuccess, out = readfile("KY_FE.iy", true)
 		if readSuccess then
 			if out ~= nil and tostring(out):gsub("%s", "") ~= "" then
 				local success, response = pcall(function()
@@ -3064,26 +3073,41 @@ function saves()
 					if vtype(json.spawnCmds, "table") then spawnCmds = json.spawnCmds end
 					if vtype(json.WayPoints, "table") then AllWaypoints = json.WayPoints else WayPoints = {} AllWaypoints = {} end
 					if vtype(json.PluginsTable, "table") then PluginsTable = json.PluginsTable else PluginsTable = {} end
-					if vtype(json.currentShade1, "table") then currentShade1 = Color3.new(json.currentShade1[1],json.currentShade1[2],json.currentShade1[3]) end
-					if vtype(json.currentShade2, "table") then currentShade2 = Color3.new(json.currentShade2[1],json.currentShade2[2],json.currentShade2[3]) end
-					if vtype(json.currentShade3, "table") then currentShade3 = Color3.new(json.currentShade3[1],json.currentShade3[2],json.currentShade3[3]) end
-					if vtype(json.currentText1, "table") then currentText1 = Color3.new(json.currentText1[1],json.currentText1[2],json.currentText1[3]) end
+					if vtype(json.currentShade1, "table") then 
+						currentShade1 = Color3.new(json.currentShade1[1],json.currentShade1[2],json.currentShade1[3]) 
+						if currentShade1 == Color3.fromRGB(36, 36, 37) then currentShade1 = Color3.fromRGB(15, 15, 15) end
+					end
+					if vtype(json.currentShade2, "table") then 
+						currentShade2 = Color3.new(json.currentShade2[1],json.currentShade2[2],json.currentShade2[3]) 
+						if currentShade2 == Color3.fromRGB(46, 46, 47) then currentShade2 = Color3.fromRGB(25, 25, 25) end
+					end
+					if vtype(json.currentShade3, "table") then 
+						currentShade3 = Color3.new(json.currentShade3[1],json.currentShade3[2],json.currentShade3[3]) 
+						if currentShade3 == Color3.fromRGB(78, 78, 79) then currentShade3 = Color3.fromRGB(253, 116, 255) end
+					end
+					if vtype(json.currentText1, "table") then 
+						currentText1 = Color3.new(json.currentText1[1],json.currentText1[2],json.currentText1[3]) 
+						if currentText1 == Color3.new(1, 1, 1) then currentText1 = Color3.fromRGB(253, 116, 255) end
+					end
 					if vtype(json.currentText2, "table") then currentText2 = Color3.new(json.currentText2[1],json.currentText2[2],json.currentText2[3]) end
-					if vtype(json.currentScroll, "table") then currentScroll = Color3.new(json.currentScroll[1],json.currentScroll[2],json.currentScroll[3]) end
+					if vtype(json.currentScroll, "table") then 
+						currentScroll = Color3.new(json.currentScroll[1],json.currentScroll[2],json.currentScroll[3]) 
+						if currentScroll == Color3.fromRGB(78, 78, 79) or currentScroll == Color3.fromRGB(78,78,79) then currentScroll = Color3.fromRGB(253, 116, 255) end
+					end
 					if vtype(json.eventBinds, "string") then loadedEventData = json.eventBinds end
 				end)
 				if not success then
 					jsonAttempts = jsonAttempts + 1
 					warn("Save Json Error:", response)
 					warn("Overwriting Save File")
-					writefile("KY.iy", defaults, true)
+					writefile("KY_FE.iy", defaults, true)
 					wait()
 					saves()
 				end
 			else
-				writefile("KY.iy", defaults, true)
+				writefile("KY_FE.iy", defaults, true)
 				wait()
-				local dReadSuccess, dOut = readfile("KY.iy", true)
+				local dReadSuccess, dOut = readfile("KY_FE.iy", true)
 				if dReadSuccess and dOut ~= nil and tostring(dOut):gsub("%s", "") ~= "" then
 					saves()
 				else
@@ -3093,9 +3117,9 @@ function saves()
 				end
 			end
 		else
-			writefile("KY.iy", defaults, true)
+			writefile("KY_FE.iy", defaults, true)
 			wait()
-			local dReadSuccess, dOut = readfile("KY.iy", true)
+			local dReadSuccess, dOut = readfile("KY_FE.iy", true)
 			if dReadSuccess and dOut ~= nil and tostring(dOut):gsub("%s", "") ~= "" then
 				saves()
 			else
@@ -3108,7 +3132,7 @@ function saves()
 		if jsonAttempts >= 10 then
 			nosaves = true
 			useFactorySettings()
-			createPopup("File Error", "Sorry, we have attempted to parse your save file, but it is unreadable!\n\nKagi Yield is now using factory settings until your exploit's file system works.\n\nYour save file has not been deleted.")
+			createPopup("File Error", "Sorry, we have attempted to parse your save file, but it is unreadable!\n\nInfinite Yield is now using factory settings until your exploit's file system works.\n\nYour save file has not been deleted.")
 		else
 			nosaves = true
 			useFactorySettings()
@@ -3141,7 +3165,7 @@ function updatesaves()
 			currentScroll = {currentScroll.R,currentScroll.G,currentScroll.B};
 			eventBinds = eventEditor.SaveData()
 		}
-		writefileCooldown("KY.iy", HttpService:JSONEncode(update))
+		writefileCooldown("KY_FE.iy", HttpService:JSONEncode(update))
 	end
 end
 
@@ -3330,7 +3354,7 @@ function CreateJoinLabel(plr,ID)
 	local ImageLabel_3 = Instance.new("ImageLabel")
 	infoFrame.Name = randomString()
 	infoFrame.Parent = scroll_3
-	infoFrame.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+	infoFrame.BackgroundColor3 = Color3.new(1, 1, 1)
 	infoFrame.BackgroundTransparency = 1
 	infoFrame.BorderColor3 = Color3.new(0.105882, 0.164706, 0.207843)
 	infoFrame.Size = UDim2.new(1, 0, 0, 50)
@@ -3344,7 +3368,7 @@ function CreateJoinLabel(plr,ID)
 	info1.Font = Enum.Font.SourceSans
 	info1.FontSize = Enum.FontSize.Size14
 	info1.Text = "Username: "..plr.Name.."\nJoined Server: "..Time()
-	info1.TextColor3 = Color3.fromRGB(70, 70, 70)
+	info1.TextColor3 = Color3.new(1, 1, 1)
 	info1.TextWrapped = true
 	info1.TextXAlignment = Enum.TextXAlignment.Left
 	info2.Name = randomString()
@@ -3357,7 +3381,7 @@ function CreateJoinLabel(plr,ID)
 	info2.Font = Enum.Font.SourceSans
 	info2.FontSize = Enum.FontSize.Size14
 	info2.Text = "User ID: "..ID.."\nAccount Age: "..plr.AccountAge.."\nJoined Roblox: Loading..."
-	info2.TextColor3 = Color3.fromRGB(70, 70, 70)
+	info2.TextColor3 = Color3.new(1, 1, 1)
 	info2.TextWrapped = true
 	info2.TextXAlignment = Enum.TextXAlignment.Left
 	info2.TextYAlignment = Enum.TextYAlignment.Center
@@ -3855,12 +3879,12 @@ ColorsButton.MouseButton1Click:Connect(function()
 			updatesaves()
 		end
 		Npicker.Default = function(self)
-			updateColors(Color3.fromRGB(255, 220, 230),shade1)
-			updateColors(Color3.fromRGB(255, 200, 220),shade2)
-			updateColors(Color3.fromRGB(255, 180, 210),shade3)
-			updateColors(Color3.fromRGB(70, 70, 70),text1)
-			updateColors(Color3.new(0.2, 0.2, 0.2),text2)
-			updateColors(Color3.fromRGB(255, 160, 200),scroll)
+			updateColors(Color3.fromRGB(15, 15, 15),shade1)
+			updateColors(Color3.fromRGB(25, 25, 25),shade2)
+			updateColors(Color3.fromRGB(253, 116, 255),shade3)
+			updateColors(Color3.fromRGB(253, 116, 255),text1)
+			updateColors(Color3.new(0, 0, 0),text2)
+			updateColors(Color3.fromRGB(253, 116, 255),scroll)
 			wait()
 			updatesaves()
 		end
@@ -4009,7 +4033,7 @@ SaveChatlogs.MouseButton1Down:Connect(function()
 		if #scroll_2:GetChildren() > 0 then
 			notify("Loading",'Hold on a sec')
 			local placeName = CleanFileName(MarketplaceService:GetProductInfo(PlaceId).Name)
-			local writelogs = '-- Kagi Yield Chat logs for "'..placeName..'"\n'
+			local writelogs = '-- Infinite Yield Chat logs for "'..placeName..'"\n'
 			for _, child in pairs(scroll_2:GetChildren()) do
 				writelogs = writelogs..'\n'..child.Text
 			end
@@ -4453,15 +4477,16 @@ function autoComplete(str,curText)
 end
 
 CMDs = {}
-CMDs[#CMDs + 1] = {NAME = 'discord / support / help', DESC = 'Invite to the Kagi Yield discord server.'}
-CMDs[#CMDs + 1] = {NAME = 'guiscale [number]', DESC = 'Changes the size of the gui. [number] accepts both decimals and whole numbers. Min is 0.4 and Max is 2'}
-CMDs[#CMDs + 1] = {NAME = 'console', DESC = 'Loads Roblox console'}
-CMDs[#CMDs + 1] = {NAME = 'oldconsole', DESC = 'Loads old Roblox console'}
+CMDs[#CMDs + 1] = {NAME = 'discord / support / help', DESC = 'Invite to the Kagi Yield / Infinite Yield discord server.'}
+CMDs[#CMDs + 1] = {NAME = 'guiscale [number]', DESC = 'Changes the size of the gui. [number] accepts decimals and whole numbers. Min is 0.4 and Max is 2'}
+CMDs[#CMDs + 1] = {NAME = 'console', DESC = 'Opens the Roblox console'}
+CMDs[#CMDs + 1] = {NAME = 'oldconsole', DESC = 'Loads an old-themed Roblox console'}
 CMDs[#CMDs + 1] = {NAME = 'explorer / dex', DESC = 'Opens DEX by Moon'}
-CMDs[#CMDs + 1] = {NAME = 'olddex / odex', DESC = 'Opens Old DEX by Moon'}
-CMDs[#CMDs + 1] = {NAME = 'remotespy / rspy', DESC = 'Opens Simple Spy V3'}
-CMDs[#CMDs + 1] = {NAME = 'executor', DESC = 'Opens an internal executor gui by dnezero'}
+CMDs[#CMDs + 1] = {NAME = 'cobalt / cspy', DESC = 'Opens Cobalt to intercept incoming and outgoing network traffic'}
+CMDs[#CMDs + 1] = {NAME = 'remotespy / rspy', DESC = 'Opens Simple Spy V3 to intercept remote calls from the client to the server'}
 CMDs[#CMDs + 1] = {NAME = 'audiologger / alogger', DESC = 'Opens Edges audio logger'}
+CMDs[#CMDs + 1] = {NAME = 'achassis', DESC = 'Loads Universal Car Tuner'}
+CMDs[#CMDs + 1] = {NAME = 'animspy', DESC = 'Loads AnimSpy'}
 CMDs[#CMDs + 1] = {NAME = 'serverinfo / info', DESC = 'Gives you info about the server'}
 CMDs[#CMDs + 1] = {NAME = 'jobid', DESC = 'Copies the games JobId to your clipboard'}
 CMDs[#CMDs + 1] = {NAME = 'notifyjobid', DESC = 'Notifies you the games JobId'}
@@ -4485,11 +4510,11 @@ CMDs[#CMDs + 1] = {NAME = 'hideguis', DESC = 'Hides any GUIs in PlayerGui'}
 CMDs[#CMDs + 1] = {NAME = 'unhideguis', DESC = 'Undoes hideguis'}
 CMDs[#CMDs + 1] = {NAME = 'guidelete', DESC = 'Enables backspace to delete GUI'}
 CMDs[#CMDs + 1] = {NAME = 'unguidelete / noguidelete', DESC = 'Disables guidelete'}
-CMDs[#CMDs + 1] = {NAME = 'hideiy', DESC = 'Hides the main IY GUI'}
-CMDs[#CMDs + 1] = {NAME = 'showiy / unhideiy', DESC = 'Shows IY again'}
-CMDs[#CMDs + 1] = {NAME = 'keepiy', DESC = 'Auto execute IY when you teleport through servers'}
-CMDs[#CMDs + 1] = {NAME = 'unkeepiy', DESC = 'Disable keepiy'}
-CMDs[#CMDs + 1] = {NAME = 'togglekeepiy', DESC = 'Toggles keepiy'}
+CMDs[#CMDs + 1] = {NAME = 'hideky / hideiy', DESC = 'Hides the main KY GUI'}
+CMDs[#CMDs + 1] = {NAME = 'showky / unhideky / showiy / unhideiy', DESC = 'Shows KY again'}
+CMDs[#CMDs + 1] = {NAME = 'keepky / keepiy', DESC = 'Auto execute KY when you teleport through servers'}
+CMDs[#CMDs + 1] = {NAME = 'unkeepky / unkeepiy', DESC = 'Disable keepky'}
+CMDs[#CMDs + 1] = {NAME = 'togglekeepky / togglekeepiy', DESC = 'Toggles keepky'}
 CMDs[#CMDs + 1] = {NAME = 'removeads / adblock', DESC = 'Automatically removes ad billboards'}
 CMDs[#CMDs + 1] = {NAME = 'savegame / saveplace', DESC = 'Uses saveinstance to save the game'}
 CMDs[#CMDs + 1] = {NAME = 'clearerror', DESC = 'Clears the annoying box and blur when a game kicks you'}
@@ -4745,6 +4770,8 @@ CMDs[#CMDs + 1] = {NAME = 'loopoof', DESC = 'Loops everyones character sounds (e
 CMDs[#CMDs + 1] = {NAME = 'unloopoof', DESC = 'Stops the oof chaos'}
 CMDs[#CMDs + 1] = {NAME = 'muteboombox [player]', DESC = 'Mutes someones boombox'}
 CMDs[#CMDs + 1] = {NAME = 'unmuteboombox [player]', DESC = 'Unmutes someones boombox'}
+CMDs[#CMDs + 1] = {NAME = 'hitboxes', DESC = 'Shows all rendered bounding boxes'}
+CMDs[#CMDs + 1] = {NAME = 'unhitboxes', DESC = 'Stops showing all rendered bounding boxes'}
 CMDs[#CMDs + 1] = {NAME = 'hitbox [player] [size] [transparency]', DESC = 'Expands the hitbox for players HumanoidRootPart (default is 1)'}
 CMDs[#CMDs + 1] = {NAME = 'headsize [player] [size]', DESC = 'Expands the head size for players Head (default is 1)'}
 CMDs[#CMDs + 1] = {NAME = '', DESC = ''}
@@ -4752,7 +4779,6 @@ CMDs[#CMDs + 1] = {NAME = 'reset', DESC = 'Resets your character normally'}
 CMDs[#CMDs + 1] = {NAME = 'respawn', DESC = 'Respawns you'}
 CMDs[#CMDs + 1] = {NAME = 'refresh / re', DESC = 'Respawns and brings you back to the same position'}
 CMDs[#CMDs + 1] = {NAME = 'god', DESC = 'Makes your character difficult to kill in most games'}
-CMDs[#CMDs + 1] = {NAME = 'permadeath', DESC = 'Makes you unable to respawn after death'}
 CMDs[#CMDs + 1] = {NAME = 'invisible / invis', DESC = 'Makes you invisible to other players'}
 CMDs[#CMDs + 1] = {NAME = 'visible / vis', DESC = 'Makes you visible to other players'}
 CMDs[#CMDs + 1] = {NAME = 'toolinvisible / toolinvis / tinvis', DESC = 'Makes you invisible to other players and able to use tools'}
@@ -4965,39 +4991,18 @@ function GetInTable(Table, Name)
 	return false
 end
 
-function permadeath(plr)
-	if replicatesignal then
-		replicatesignal(plr.ConnectDiedSignalBackend)
-		task.wait(Players.RespawnTime - 0.1)
-	end
-end
-
 function respawn(plr)
 	if invisRunning then TurnVisible() end
-
-	local rcdEnabled, wasHidden = false, false
-	if gethidden then
-		rcdEnabled, wasHidden = gethidden(workspace, "RejectCharacterDeletions") ~= Enum.RejectCharacterDeletions.Disabled
-	end
-
-	if rcdEnabled and replicatesignal then
-		replicatesignal(plr.ConnectDiedSignalBackend)
-		task.wait(Players.RespawnTime - 0.1)
-		replicatesignal(plr.Kill)
-	elseif rcdEnabled and not replicatesignal then
-		notify("Incompatible Exploit", "Your exploit does not support this command (missing replicatesignal)")
-	else
-		local char = plr.Character
-		local hum = char:FindFirstChildWhichIsA("Humanoid")
-		if hum then hum:ChangeState(Enum.HumanoidStateType.Dead) end
-		char:ClearAllChildren()
-		local newChar = Instance.new("Model")
-		newChar.Parent = workspace
-		plr.Character = newChar
-		task.wait()
-		plr.Character = char
-		newChar:Destroy()
-	end
+    local char = plr.Character
+    local hum = char:FindFirstChildWhichIsA("Humanoid")
+    if hum then hum:ChangeState(Enum.HumanoidStateType.Dead) end
+    char:ClearAllChildren()
+    local newChar = Instance.new("Model")
+    newChar.Parent = workspace
+    plr.Character = newChar
+    task.wait()
+    plr.Character = char
+    newChar:Destroy()
 end
 
 local refreshCmd = false
@@ -5760,7 +5765,7 @@ function ESP(plr, logic)
 				TextLabel.Size = UDim2.new(0, 100, 0, 100)
 				TextLabel.Font = Enum.Font.SourceSansSemibold
 				TextLabel.TextSize = 20
-				TextLabel.TextColor3 = Color3.fromRGB(70, 70, 70)
+				TextLabel.TextColor3 = Color3.new(1, 1, 1)
 				TextLabel.TextStrokeTransparency = 0
 				TextLabel.TextYAlignment = Enum.TextYAlignment.Bottom
 				TextLabel.Text = 'Name: '..plr.Name
@@ -5913,7 +5918,7 @@ function Locate(plr)
 				TextLabel.Size = UDim2.new(0, 100, 0, 100)
 				TextLabel.Font = Enum.Font.SourceSansSemibold
 				TextLabel.TextSize = 20
-				TextLabel.TextColor3 = Color3.fromRGB(70, 70, 70)
+				TextLabel.TextColor3 = Color3.new(1, 1, 1)
 				TextLabel.TextStrokeTransparency = 0
 				TextLabel.TextYAlignment = Enum.TextYAlignment.Bottom
 				TextLabel.Text = 'Name: '..plr.Name
@@ -6302,7 +6307,7 @@ end)
 PluginsGUI = PluginEditor.background
 
 function addPlugin(name)
-	if name:lower() == 'plugin file name' or name:lower() == 'KY.iy' or name == 'ky' then
+	if name:lower() == 'plugin file name' or name:lower() == 'ky_fe.iy' or name == 'ky_fe' then
 		notify('Plugin Error','Please enter a valid plugin')
 	else
 		local file
@@ -6499,7 +6504,17 @@ local TeleportCheck = false
 Players.LocalPlayer.OnTeleport:Connect(function(State)
 	if KeepInfYield and (not TeleportCheck) and queueteleport then
 		TeleportCheck = true
-		queueteleport("loadstring(game:HttpGet('https://raw.githubusercontent.com/k7gi/KagiYield/refs/heads/main/main.lua'))()")
+		local name = "main.lua"
+		if isfile and isfile("kagiyield.lua") then
+			name = "kagiyield.lua"
+		elseif isfile and isfile("main.lua") then
+			name = "main.lua"
+		end
+		if isfile and isfile(name) then
+			queueteleport("loadstring(readfile('" .. name .. "'))()")
+		else
+			queueteleport("loadstring(game:HttpGet('https://raw.githubusercontent.com/k7gi/KagiYield/refs/heads/main/main.lua'))()")
+		end
 	end
 end)
 
@@ -6568,7 +6583,7 @@ addcmd('discord', {'support', 'help'}, function(args, speaker)
 	end
 end)
 
-addcmd('keepiy', {}, function(args, speaker)
+addcmd('keepiy', {'keepky'}, function(args, speaker)
 	if queueteleport then
 		KeepInfYield = true
 		notify('KeepIY','Kagi Yield will now run after you teleport')
@@ -6578,7 +6593,7 @@ addcmd('keepiy', {}, function(args, speaker)
 	end
 end)
 
-addcmd('unkeepiy', {}, function(args, speaker)
+addcmd('unkeepiy', {'unkeepky'}, function(args, speaker)
 	if queueteleport then
 		KeepInfYield = false
 		notify('KeepIY','Kagi Yield will no longer run after you teleport')
@@ -6588,7 +6603,7 @@ addcmd('unkeepiy', {}, function(args, speaker)
 	end
 end)
 
-addcmd('togglekeepiy', {}, function(args, speaker)
+addcmd('togglekeepiy', {'togglekeepky'}, function(args, speaker)
 	if queueteleport then
 		KeepInfYield = not KeepInfYield
 		updatesaves()
@@ -6661,11 +6676,11 @@ addcmd('serverinfo',{'info','sinfo'},function(args, speaker)
 		Exit.ZIndex = 10
 
 		ExitImage.Parent = Exit
-		ExitImage.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+		ExitImage.BackgroundColor3 = Color3.new(1, 1, 1)
 		ExitImage.BackgroundTransparency = 1
 		ExitImage.Position = UDim2.new(0, 5, 0, 5)
 		ExitImage.Size = UDim2.new(0, 10, 0, 10)
-		ExitImage.Image = getcustomasset("infiniteyield/assets/close.png")
+		ExitImage.Image = getcustomasset("kagiyield/assets/close.png")
 		ExitImage.ZIndex = 10
 
 		background.Name = "background"
@@ -7791,7 +7806,7 @@ addcmd('unguidelete',{'noguidelete'},function(args, speaker)
 end)
 
 local wasStayOpen = StayOpen
-addcmd('hideiy',{},function(args, speaker)
+addcmd('hideiy',{'hideky'},function(args, speaker)
 	isHidden = true
 	wasStayOpen = StayOpen
 	if StayOpen == true then
@@ -7800,10 +7815,10 @@ addcmd('hideiy',{},function(args, speaker)
 	end
 	minimizeNum = 0
 	minimizeHolder()
-	if not (args[1] and tostring(args[1]) == 'nonotify') then notify('IY Hidden','You can press the prefix key to access the command bar') end
+	if not (args[1] and tostring(args[1]) == 'nonotify') then notify('KY Hidden','You can press the prefix key to access the command bar') end
 end)
 
-addcmd('showiy',{'unhideiy'},function(args, speaker)
+addcmd('showiy',{'unhideiy','showky','unhideky'},function(args, speaker)
 	isHidden = false
 	minimizeNum = -20
 	if wasStayOpen then
@@ -8985,32 +9000,46 @@ addcmd('un2022materials',{'unuse2022materials'},function(args, speaker)
 	end
 end)
 
-addcmd('goto',{'to'},function(args, speaker)
-	local players = getPlayer(args[1], speaker)
-	for i,v in pairs(players)do
-		if Players[v].Character ~= nil then
-			if speaker.Character:FindFirstChildOfClass('Humanoid') and speaker.Character:FindFirstChildOfClass('Humanoid').SeatPart then
-				speaker.Character:FindFirstChildOfClass('Humanoid').Sit = false
-				wait(.1)
-			end
-			getRoot(speaker.Character).CFrame = getRoot(Players[v].Character).CFrame + Vector3.new(3,1,0)
-		end
-	end
-	execCmd('breakvelocity')
+addcmd("goto", {"to"}, function(args, speaker)
+    local character = speaker and speaker.Character
+    local humanoid = character and character:FindFirstChildWhichIsA("Humanoid")
+    local players = getPlayer(args[1], speaker)
+    for _, v in pairs(players) do
+        if Players[v].Character ~= nil then
+            if humanoid and humanoid.SeatPart then
+                humanoid.Sit = false
+                task.wait(0.1)
+            end
+            getRoot(speaker.Character).CFrame = getRoot(Players[v].Character):GetPivot() + Vector3.new(3, 1, 0)
+        end
+    end
+    execCmd("breakvelocity")
 end)
 
-addcmd('tweengoto',{'tgoto','tto','tweento'},function(args, speaker)
-	local players = getPlayer(args[1], speaker)
-	for i,v in pairs(players)do
-		if Players[v].Character ~= nil then
-			if speaker.Character:FindFirstChildOfClass('Humanoid') and speaker.Character:FindFirstChildOfClass('Humanoid').SeatPart then
-				speaker.Character:FindFirstChildOfClass('Humanoid').Sit = false
-				wait(.1)
-			end
-			TweenService:Create(getRoot(speaker.Character), TweenInfo.new(tweenSpeed, Enum.EasingStyle.Linear), {CFrame = getRoot(Players[v].Character).CFrame + Vector3.new(3,1,0)}):Play()
-		end
-	end
-	execCmd('breakvelocity')
+addcmd("tweengoto", {"tgoto", "tto", "tweento"}, function(args, speaker)
+    local character = speaker and speaker.Character
+    local humanoid = character and character:FindFirstChildWhichIsA("Humanoid")
+
+    local oldState = humanoid and humanoid:GetStateEnabled(Enum.HumanoidStateType.Seated)
+    if humanoid then humanoid:SetStateEnabled(Enum.HumanoidStateType.Seated, false) end
+
+    local players = getPlayer(args[1], speaker)
+    for _, v in pairs(players) do
+        if Players[v].Character ~= nil then
+            if humanoid and humanoid.SeatPart then
+                humanoid.Sit = false
+                task.wait(0.1)
+            end
+            TweenService:Create(getRoot(speaker.Character), TweenInfo.new(tweenSpeed, Enum.EasingStyle.Linear), {
+                CFrame = getRoot(Players[v].Character):GetPivot() + Vector3.new(3, 1, 0)
+            }):Play()
+        end
+    end
+    execCmd("breakvelocity")
+
+    if type(oldState) == "boolean" then
+        humanoid:SetStateEnabled(Enum.HumanoidStateType.Seated, oldState)
+    end
 end)
 
 addcmd('vehiclegoto',{'vgoto','vtp','vehicletp'},function(args, speaker)
@@ -9389,9 +9418,7 @@ end)
 
 addcmd("reset", {}, function(args, speaker)
 	local humanoid = speaker.Character and speaker.Character:FindFirstChildWhichIsA("Humanoid")
-	if replicatesignal then
-		replicatesignal(speaker.Kill)
-	elseif humanoid then
+	if humanoid then
 		humanoid:ChangeState(Enum.HumanoidStateType.Dead)
 	else
 		speaker.Character:BreakJoints()
@@ -9423,7 +9450,6 @@ addcmd("refresh", {"re"}, function(args, speaker)
 end)
 
 addcmd("god", {}, function(args, speaker)
-	permadeath(speaker)
 	local Cam = workspace.CurrentCamera
 	local Char, Pos = speaker.Character, Cam.CFrame
 	local Human = Char and Char:FindFirstChildWhichIsA("Humanoid")
@@ -10445,105 +10471,35 @@ end)
 
 addcmd("explorer", {"dex"}, function(args, speaker)
 	notify("Loading", "Hold on a sec")
-	loadstring(game:HttpGet("https://raw.githubusercontent.com/k7gi/KagiDex/refs/heads/main/main.lua"))()
+	loadstring(game:HttpGet("https://raw.githubusercontent.com/k7gi/KagiYield/refs/heads/main/dex.lua"))()
 end)
 
-addcmd('olddex', {'odex'}, function(args, speaker)
-	notify('Loading old explorer', 'Hold on a sec')
-
-	local getobjects = function(a)
-		local Objects = {}
-		if a then
-			local b = InsertService:LoadLocalAsset(a)
-			if b then 
-				table.insert(Objects, b) 
-			end
-		end
-		return Objects
-	end
-
-	local Dex = getobjects("rbxassetid://10055842438")[1]
-	Dex.Parent = PARENT
-
-	local function Load(Obj, Url)
-		local function GiveOwnGlobals(Func, Script)
-			-- Fix for this edit of dex being poorly made
-			-- I (Alex) would like to commemorate whoever added this dex in somehow finding the worst dex to ever exist
-			local Fenv, RealFenv, FenvMt = {}, {
-				script = Script,
-				getupvalue = function(a, b)
-					return nil -- force it to use globals
-				end,
-				getreg = function() -- It loops registry for some idiotic reason so stop it from doing that and just use a global
-					return {} -- force it to use globals
-				end,
-				getprops = getprops or function(inst)
-					if getproperties then
-						local props = getproperties(inst)
-						if props[1] and gethiddenproperty then
-							local results = {}
-							for _,name in pairs(props) do
-								local success, res = pcall(gethiddenproperty, inst, name)
-								if success then
-									results[name] = res
-								end
-							end
-
-							return results
-						end
-
-						return props
-					end
-
-					return {}
-				end
-			}, {}
-			FenvMt.__index = function(a,b)
-				return RealFenv[b] == nil and getgenv()[b] or RealFenv[b]
-			end
-			FenvMt.__newindex = function(a, b, c)
-				if RealFenv[b] == nil then 
-					getgenv()[b] = c 
-				else 
-					RealFenv[b] = c 
-				end
-			end
-			setmetatable(Fenv, FenvMt)
-			pcall(setfenv, Func, Fenv)
-			return Func
-		end
-
-		local function LoadScripts(_, Script)
-			if Script:IsA("LocalScript") then
-				task.spawn(function()
-					GiveOwnGlobals(loadstring(Script.Source,"="..Script:GetFullName()), Script)()
-				end)
-			end
-			table.foreach(Script:GetChildren(), LoadScripts)
-		end
-
-		LoadScripts(nil, Obj)
-	end
-
-	Load(Dex)
+addcmd("cobalt", {"cspy"}, function(args, speaker)
+    notify("Loading", "Hold on a sec")
+    -- Full credit to notpoiu, creator of Cobalt
+    loadstring(game:HttpGet("https://github.com/notpoiu/cobalt/releases/latest/download/Cobalt.luau"))()
 end)
 
 addcmd('remotespy',{'rspy'},function(args, speaker)
 	notify("Loading",'Hold on a sec')
 	-- Full credit to exx, creator of SimpleSpy
 	-- also thanks to Amity for fixing
-	loadstring(game:HttpGet("https://raw.githubusercontent.com/infyiff/backup/main/SimpleSpyV3/main.lua"))()
-end)
-
-addcmd("executor", {}, function(args, speaker)
-    -- by dnezero
-    notify("Loading", "Hold on a sec")
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/infyiff/backup/refs/heads/main/executor.lua"))()
+	loadstring(game:HttpGet("https://raw.githubusercontent.com/k7gi/KagiYield/refs/heads/main/rspy.lua"))()
 end)
 
 addcmd('audiologger',{'alogger'},function(args, speaker)
 	notify("Loading",'Hold on a sec')
 	loadstring(game:HttpGet(('https://raw.githubusercontent.com/infyiff/backup/main/audiologger.lua'),true))()
+end)
+
+addcmd('achassis',{},function(args, speaker)
+	notify("Loading",'Hold on a sec')
+	loadstring(game:HttpGet('https://raw.githubusercontent.com/Aoruen/Roblox-Stuff/refs/heads/main/Universal%20Car%20Tuner.lua'))()
+end)
+
+addcmd('animspy',{},function(args, speaker)
+	notify("Loading",'Hold on a sec')
+	loadstring(game:HttpGet("https://raw.githubusercontent.com/k7gi/AnimSpy/refs/heads/main/main.lua"))()
 end)
 
 local loopgoto = nil
@@ -11874,7 +11830,7 @@ addcmd('invisfling',{},function(args, speaker)
 		end
 	end
 	root.Transparency = 0
-	root.Color = Color3.fromRGB(70, 70, 70)
+	root.Color = Color3.new(1, 1, 1)
 	local invisflingStepped
 	invisflingStepped = RunService.Stepped:Connect(function()
 		if speaker.Character and getRoot(speaker.Character) then
@@ -12237,14 +12193,14 @@ addcmd('hovername',{},function(args, speaker)
 	nameBox.Font = Enum.Font.Code
 	nameBox.TextSize = 16
 	nameBox.Text = ""
-	nameBox.TextColor3 = Color3.fromRGB(70, 70, 70)
+	nameBox.TextColor3 = Color3.new(1, 1, 1)
 	nameBox.TextStrokeTransparency = 0
 	nameBox.TextXAlignment = Enum.TextXAlignment.Left
 	nameBox.ZIndex = 10
 	nbSelection = Instance.new('SelectionBox')
 	nbSelection.Name = randomString()
 	nbSelection.LineThickness = 0.03
-	nbSelection.Color3 = Color3.fromRGB(70, 70, 70)
+	nbSelection.Color3 = Color3.new(1, 1, 1)
 	local function updateNameBox()
 		local t
 		local target = IYMouse.Target
@@ -12329,6 +12285,14 @@ addcmd('hitbox',{},function(args, speaker)
 			end
 		end
 	end
+end)
+
+addcmd("hitboxes", {}, function(args, speaker)
+    settings():GetService("RenderSettings").ShowBoundingBoxes = true
+end)
+
+addcmd("unhitboxes", {}, function(args, speaker)
+    settings():GetService("RenderSettings").ShowBoundingBoxes = false
 end)
 
 addcmd('stareat',{'stare'},function(args, speaker)
@@ -12790,15 +12754,6 @@ addcmd("phonebook", {"call"}, function(args, speaker)
 	end
 end)
 
-addcmd("permadeath", {}, function(args, speaker)
-	if replicatesignal then
-		permadeath(speaker)
-		notify("Permadeath", "Enabled")
-	else
-		notify("Incompatible Exploit", "Your exploit does not support this command (missing replicatesignal)")
-	end
-end)
-
 local freezingua = nil
 frozenParts = {}
 addcmd('freezeunanchored',{'freezeua'},function(args, speaker)
@@ -13034,7 +12989,7 @@ addcmd("addallplugins", {"loadallplugins"}, function(args, speaker)
 		local fileName = filePath:match("([^/\\]+%.iy)$")
 
 		if fileName and
-			fileName:lower() ~= "KY.iy" and
+			fileName:lower() ~= "ky_fe.iy" and
 			not isfolder(fileName) and
 			not table.find(PluginsTable, fileName)
 		then
@@ -13058,13 +13013,13 @@ if IsOnMobile then
 	local UICorner = Instance.new("UICorner")
 	QuickCapture.Name = randomString()
 	QuickCapture.Parent = PARENT
-	QuickCapture.BackgroundColor3 = Color3.fromRGB(255, 200, 220)
+	QuickCapture.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 	QuickCapture.BackgroundTransparency = 0.14
 	QuickCapture.Position = UDim2.new(0.489, 0, 0, 0)
 	QuickCapture.Size = UDim2.new(0, 32, 0, 33)
 	QuickCapture.Font = Enum.Font.SourceSansBold
-	QuickCapture.Text = "IY"
-	QuickCapture.TextColor3 = Color3.fromRGB(70, 70, 70)
+	QuickCapture.Text = "KY"
+	QuickCapture.TextColor3 = Color3.fromRGB(255, 255, 255)
 	QuickCapture.TextSize = 20
 	QuickCapture.TextWrapped = true
 	QuickCapture.ZIndex = 10
@@ -13177,7 +13132,7 @@ end)
 
 if not isLegacyChat then
 	TextChatService.MessageReceived:Connect(function(message)
-		if message.TextSource then
+		if message.TextSource and message.Status ~= Enum.TextChatMessageStatus.InvalidTextChannelPermissions then
 			local player = Players:GetPlayerByUserId(message.TextSource.UserId)
 			if not player then return end
 
@@ -13244,13 +13199,13 @@ end)
 
 task.spawn(function()
 	local success, latestVersionInfo = pcall(function() 
-		local versionJson = game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/version")
+		local versionJson = game:HttpGet("https://raw.githubusercontent.com/EdgeIY/kagiyield/master/version")
 		return HttpService:JSONDecode(versionJson)
 	end)
 
 	if success then
 		if currentVersion ~= latestVersionInfo.Version then
-			notify("Outdated", "Get the new version at infyiff.github.io")
+			-- notify("Outdated", "Get the new version at infyiff.github.io")
 		end
 
 		if latestVersionInfo.Announcement and latestVersionInfo.Announcement ~= "" then
@@ -13319,11 +13274,11 @@ task.spawn(function()
 			Exit.ZIndex = 10
 
 			ExitImage.Parent = Exit
-			ExitImage.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+			ExitImage.BackgroundColor3 = Color3.new(1, 1, 1)
 			ExitImage.BackgroundTransparency = 1
 			ExitImage.Position = UDim2.new(0, 5, 0, 5)
 			ExitImage.Size = UDim2.new(0, 10, 0, 10)
-			ExitImage.Image = getcustomasset("infiniteyield/assets/close.png")
+			ExitImage.Image = getcustomasset("kagiyield/assets/close.png")
 			ExitImage.ZIndex = 10
 
 			task.wait(1)
